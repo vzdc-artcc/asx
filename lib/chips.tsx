@@ -1,6 +1,6 @@
-import {AirspaceConditionWithContainer} from "@/components/Viewer/AirspaceViewer";
 import {Chip} from "@mui/material";
 import React from "react";
+import {AirspaceConditionWithContainer} from "@/types/airspace_viewer";
 
 export const getConditionChips = (conditions: AirspaceConditionWithContainer[]) => {
     const containers = conditions.map(condition => condition.container);

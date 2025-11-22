@@ -1,42 +1,32 @@
 'use client';
-import React, {useState} from 'react';
-import {AirspaceContainerWithConditions} from "@/components/Viewer/AirspaceViewer";
+import React, {useContext, useState} from 'react';
 import {Chip, Paper, Stack, Typography} from "@mui/material";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import AirspaceConditionAddButton from "@/components/Viewer/AirspaceCondition/AirspaceConditionAddButton";
 import {AirspaceCondition} from "@prisma/client";
 import AirspaceConditionDialog from "@/components/Viewer/AirspaceCondition/AirspaceConditionDialog";
+import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
+import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
+import {AirspaceConditionWithContainer} from "@/types/airspace_viewer";
 
-export default function AirspaceConditionSelector({containers, defaultActiveIds,}: {
-    containers: AirspaceContainerWithConditions[],
-    defaultActiveIds?: string[],
-}) {
+export default function AirspaceConditionSelector() {
 
-    const router = useRouter();
-    const pathname = usePathname();
-    const conditions = containers.flatMap(airport => airport.conditions);
-    const searchParams = useSearchParams();
-
-    if (!searchParams.has('conditions') && defaultActiveIds) {
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set('conditions', defaultActiveIds.join(','));
-        router.push(`${pathname}?${newSearchParams.toString()}`);
-    }
-
-    const activeConditions = conditions.filter(condition => searchParams.get('conditions')?.split(',').includes(condition.id));
+    const config = useContext(AirspaceViewerConfigContext);
+    const allData = useContext(AirspaceViewerDataContext);
 
     const [editOpen, setEditOpen] = useState(false);
-    const [editCondition, setEditCondition] = useState<AirspaceCondition | null>(null);
+    const [editCondition, setEditCondition] = useState<AirspaceConditionWithContainer | null>(null);
 
-    const getAirport = (conditionId: string) => {
-        return containers.find(airport => airport.conditions.some(condition => condition.id.toString() === conditionId));
+    if (!config.data || !allData) {
+        return <></>;
     }
 
+    const conditions = config.data.activeAirspaceConditions.sort((a, b) => a.container.order - b.container.order);
+    const containers = allData.allAirspaceContainers.sort((a, b) => a.order - b.order);
+
+
     const deleteCondition = (condition: AirspaceCondition) => {
-        const newSearchParams = new URLSearchParams(searchParams);
-        const activeConditionIds = newSearchParams.get('conditions')?.split(',') ?? [];
-        newSearchParams.set('conditions', activeConditionIds.filter(id => id !== condition.id.toString()).join(','));
-        router.push(`${pathname}?${newSearchParams.toString()}`);
+        const newConditionIds = conditions.filter(c => c.id !== condition.id).map((c) => c.id);
+        config.updateConditions?.(newConditionIds);
     }
 
     const closeEdit = () => {
@@ -45,36 +35,39 @@ export default function AirspaceConditionSelector({containers, defaultActiveIds,
     }
 
     const submitEdit = (conditionId: string) => {
-        const newSearchParams = new URLSearchParams(searchParams);
-        const activeConditionIds = newSearchParams.get('conditions')?.split(',') ?? [];
-        newSearchParams.set('conditions', activeConditionIds.map(id => id === editCondition?.id ? conditionId : id).join(','));
-        router.push(`${pathname}?${newSearchParams.toString()}`);
+        const newConditionIds = conditions.map(c => c.id === (editCondition?.id || '') ? conditionId : c.id);
+        config.updateConditions?.(newConditionIds);
         closeEdit();
     }
 
-    const getContainer = (conditionId?: string) => {
-        return containers.find(container => container.conditions.some(condition => condition.id === conditionId));
+    const getContainer = (containerId?: string) => {
+        const container = containers.find(c => c.id === containerId);
+        if (!container) {
+            return undefined;
+        }
+        return container;
     }
 
     return (
         <>
             <AirspaceConditionDialog open={editOpen} onClose={closeEdit} containerOptions={containers}
                                      defaultSelectedCondition={editCondition || undefined}
-                                     defaultSelectedContainer={getContainer(editCondition?.id)} onSubmit={submitEdit}/>
+                                     defaultSelectedContainer={getContainer(editCondition?.containerId)}
+                                     onSubmit={submitEdit}/>
             <Paper sx={{p: 0.5,}}>
                 <Stack direction="row" spacing={1} alignItems="center">
-                    <AirspaceConditionAddButton allContainers={containers}/>
+                    <AirspaceConditionAddButton/>
                     <Stack direction="row" spacing={1} sx={{overflowX: 'auto',}}>
-                        {activeConditions.map(condition => (
+                        {conditions.map(condition => (
                             <Chip key={condition.id}
                                   onClick={() => {
                                       setEditCondition(condition);
                                       setEditOpen(true);
                                   }}
-                                  label={`${getAirport(condition.id)?.name || ''}/${condition.name}`}
+                                  label={`${condition.container.name}/${condition.name}`}
                                   onDelete={() => deleteCondition(condition)}/>
                         ))}
-                        {activeConditions.length === 0 &&
+                        {conditions.length === 0 &&
                             <Typography variant="subtitle1">Add airspace conditions here.</Typography>}
                     </Stack>
                 </Stack>

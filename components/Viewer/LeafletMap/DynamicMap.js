@@ -18,6 +18,8 @@ const Map = ({children, ...rest}) => {
     //   })();
     // }, []);
 
+    const year = new Date().getFullYear();
+
     return (
         <MapContainer {...rest}>
             <AttributionControl position="bottomleft" prefix={false}>
@@ -26,10 +28,13 @@ const Map = ({children, ...rest}) => {
             <div className="leaflet-control-container">
                 <div className=" leaflet-bottom leaflet-left">
                     <div className="leaflet-control-attribution leaflet-control">
-                        &copy; 2025&nbsp;
+                        &copy; {year}&nbsp;Aneesh Reddy &&nbsp;
                         <Link href="https://vzdc.org">
-                            Virtual Washington ARTCC
+                            Virtual Washington ARTCC (vZDC)
                         </Link>
+                    </div>
+                    <div className="leaflet-control-attribution leaflet-control" style={{color: 'red',}}>
+                        NOT FOR REAL WORLD USE
                     </div>
                 </div>
             </div>

@@ -1,26 +1,30 @@
 'use client';
-import React, {SyntheticEvent, useEffect, useState} from 'react';
+import React, {SyntheticEvent, useContext, useState} from 'react';
 import {RadarFacility} from "@prisma/client";
 import {Autocomplete, Box, IconButton, Stack, TextField,} from "@mui/material";
 import Form from "next/form";
 import {Add} from "@mui/icons-material";
 import {toast} from "react-toastify";
-import {useSearchParams} from "next/navigation";
+import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
+import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 
-export default function FacilityAddForm({facilities, onSubmit}: {
-    facilities: RadarFacility[],
+export default function FacilityAddForm({onSubmit}: {
     onSubmit: (facilityId: string) => void,
 }) {
 
-    const searchParams = useSearchParams();
-    const [availableFacilities, setAvailableFacilities] = useState<RadarFacility[]>(facilities);
     const [selectedFacility, setSelectedFacility] = useState<RadarFacility | null>(null);
 
-    useEffect(() => {
-        const activeFacilityIds = searchParams.get('facilities')?.split(',') ?? [];
-        const availableFacilities = facilities.filter(facility => !activeFacilityIds.includes(facility.id));
-        setAvailableFacilities(availableFacilities);
-    }, [facilities, searchParams]);
+    const allData = useContext(AirspaceViewerDataContext);
+    const config = useContext(AirspaceViewerConfigContext);
+
+    if (!config?.data || !allData) {
+        return <></>
+    }
+
+    const activeFacilities = config.data.activeFacilities;
+    const availableFacilities = allData.allRadarFacilities.filter(facility =>
+        !activeFacilities.some(active => active.id === facility.id)
+    );
 
     const handleChange = (event: SyntheticEvent, value: RadarFacility | null) => {
         setSelectedFacility(value);
@@ -33,7 +37,7 @@ export default function FacilityAddForm({facilities, onSubmit}: {
         }
 
         onSubmit(selectedFacility.id);
-        toast.success(`${facilities.find(f => f.id === selectedFacility.id)?.name} added to explorer!`);
+        // toast.success(`${selectedFacility.name} added to explorer!`);
         setSelectedFacility(null);
     }
 

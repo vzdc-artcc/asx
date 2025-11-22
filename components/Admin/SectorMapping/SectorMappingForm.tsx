@@ -33,6 +33,12 @@ export default function SectorMappingForm({ radarFacility, sectorMapping }: { ra
                 <TextField name="name" label="Name *" variant="filled" defaultValue={sectorMapping?.name} fullWidth />
                 <TextField name="frequency" label="Frequency *" variant="filled" defaultValue={sectorMapping?.frequency}
                            fullWidth/>
+                <TextField name="explorerColor" label="Airspace Explorer Color *" variant="filled"
+                           defaultValue={sectorMapping?.explorerColor}
+                           fullWidth/>
+                <TextField name="consolidationColor" label="Live Consolidation Color *" variant="filled"
+                           defaultValue={sectorMapping?.consolidationColor}
+                           fullWidth/>
                 <TextField name="idsRadarSectorId"
                            helperText="This will be used for radar consolidations.  The ID will be located in the URL and in the Edit window of each sector: /admin/radars/<RADAR FACILITY>/sectors/<SECTOR ID>"
                            label="IDS Radar Sector ID *" placeholder="This must be EXACTLY the ID displayed in the IDS."

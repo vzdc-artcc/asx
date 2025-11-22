@@ -62,8 +62,9 @@ model VerificationToken {
 }
 
 model VideoMap {
-  id   String @id @default(cuid())
-  name String @unique
+  id    String @id @default(cuid())
+  name  String @unique
+  color String @default("#000000")
 
   defaultEnabled Boolean @default(false)
 
@@ -87,8 +88,10 @@ model SectorMapping {
   id               String @id @default(cuid())
   idsRadarSectorId String @unique
 
-  name      String
-  frequency String @default("199.998")
+  name               String
+  explorerColor      String @default("#FFFFFF")
+  consolidationColor String @default("#FF0000")
+  frequency          String @default("199.998")
 
   radarFacility   RadarFacility @relation(fields: [radarFacilityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   radarFacilityId String

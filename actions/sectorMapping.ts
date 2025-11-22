@@ -104,6 +104,18 @@ export const createOrUpdateSectorMapping = async (formData: FormData) => {
         radarFacilityId: z.string().nonempty("Radar Facility ID is required."),
         name: z.string().nonempty("Name is required."),
         frequency: z.string().nonempty("Frequency is required."),
+        explorerColor: z.string().min(1, "Explorer Color is required.")
+            .transform((s) => {
+                const t = String(s).trim();
+                return t.startsWith('#') ? t : `#${t}`;
+            })
+            .refine(s => /^#[0-9A-Fa-f]{6}$/.test(s), {message: 'Explorer Color must be a 6-digit HEX color prefixed with #'}),
+        consolidationColor: z.string().min(1, "Consolidation Color is required.")
+            .transform((s) => {
+                const t = String(s).trim();
+                return t.startsWith('#') ? t : `#${t}`;
+            })
+            .refine(s => /^#[0-9A-Fa-f]{6}$/.test(s), {message: 'Consolidation Color must be a 6-digit HEX color prefixed with #'}),
         idsRadarSectorId: z.string().nonempty("IDS Radar Sector ID is required."),
     });
 
@@ -112,6 +124,8 @@ export const createOrUpdateSectorMapping = async (formData: FormData) => {
         radarFacilityId: formData.get('radarFacilityId') as string,
         name: formData.get('name') as string,
         frequency: formData.get('frequency') as string,
+        explorerColor: formData.get('explorerColor') as string,
+        consolidationColor: formData.get('consolidationColor') as string,
         idsRadarSectorId: formData.get('idsRadarSectorId') as string,
     });
 
@@ -128,6 +142,8 @@ export const createOrUpdateSectorMapping = async (formData: FormData) => {
                 name: result.data.name,
                 frequency: result.data.frequency,
                 idsRadarSectorId: result.data.idsRadarSectorId,
+                explorerColor: result.data.explorerColor,
+                consolidationColor: result.data.consolidationColor,
             },
         });
 
@@ -145,6 +161,8 @@ export const createOrUpdateSectorMapping = async (formData: FormData) => {
                 name: result.data.name,
                 frequency: result.data.frequency,
                 idsRadarSectorId: result.data.idsRadarSectorId,
+                explorerColor: result.data.explorerColor,
+                consolidationColor: result.data.consolidationColor,
             },
         });
 

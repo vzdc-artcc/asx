@@ -62,7 +62,7 @@ export default function AirspaceConditionDialog({
                         defaultValue={defaultSelectedCondition}
                         value={defaultSelectedCondition ?? selectedCondition}
                         renderInput={(params) => <TextField {...params}
-                                                            helperText="You must select an airport first."
+                                                            helperText="You must select an option above first."
                                                             label="Condition" variant="filled"/>}
                     />
                 </Stack>

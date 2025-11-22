@@ -1,54 +1,42 @@
 'use client';
-import React, {SyntheticEvent, useEffect, useState} from 'react';
-import {VideoMapWithMappings} from "@/components/Viewer/AirspaceViewer";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import React, {SyntheticEvent, useContext} from 'react';
 import {Autocomplete, Box, Chip, TextField, Typography} from "@mui/material";
 import {getConditionChips} from "@/lib/chips";
+import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
+import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
+import FacilityColorPicker from "@/components/Viewer/FacilitySelector/FacilityColorPicker";
+import {VideoMapWithMappings} from "@/types/airspace_viewer";
 
-export default function VideoMapSelector({allVideoMaps}: { allVideoMaps: VideoMapWithMappings[], }) {
+export default function VideoMapSelector() {
+    const allData = useContext(AirspaceViewerDataContext);
+    const config = useContext(AirspaceViewerConfigContext);
 
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [selectedVideoMaps, setSelectedVideoMaps] = useState<VideoMapWithMappings[]>([]);
+    if (!allData || !config.data) {
+        return <></>;
+    }
 
-    useEffect(() => {
-
-        if (!searchParams.has('videoMaps')) {
-            const defaultVideoMaps = allVideoMaps.filter(videoMap => videoMap.defaultEnabled);
-            if (defaultVideoMaps.length > 0) {
-                const newSearchParams = new URLSearchParams(searchParams);
-                newSearchParams.delete('videoMap');
-                newSearchParams.set('videoMaps', defaultVideoMaps.map(videoMap => videoMap.id).join(','));
-                router.push(`${pathname}?${newSearchParams.toString()}`);
-            }
-            return;
-        }
-
-        const selectedVideoMapIds = searchParams.get('videoMaps')?.split(',').filter(Boolean) || [];
-        const selectedVideoMaps = allVideoMaps.filter(videoMap => selectedVideoMapIds.includes(videoMap.id));
-        setSelectedVideoMaps(selectedVideoMaps);
-    }, [allVideoMaps, pathname, router, searchParams]);
+    const activeVideoMaps = config.data.activeVideoMaps.sort((a, b) => b.order - a.order).sort((a, b) => a.order - b.order);
+    const allVideoMaps = allData.allVideoMaps.sort((a, b) => a.order - b.order);
 
     const handleChange = (e: SyntheticEvent, v: VideoMapWithMappings[]) => {
-        setSelectedVideoMaps(v);
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set('videoMaps', v.map(videoMap => videoMap.id).join(','));
-        router.push(`${pathname}?${newSearchParams.toString()}`);
+        const newVideoMapIds = v.map(vm => vm.id);
+        config.updateVideoMaps?.(newVideoMapIds);
     }
 
     return (
         (<Autocomplete
             multiple
             fullWidth
-            options={allVideoMaps}
+            options={allVideoMaps as VideoMapWithMappings[]}
             limitTags={3}
             renderTags={(values, getTagProps) => values.map((value, index) => (
                 // eslint-disable-next-line react/jsx-key
-                (<Chip size="small" label={value.name} {...getTagProps({index,})} />)
+                (<Chip label={<span>{value.name} <FacilityColorPicker
+                    existingColor={config.data?.colorOverrides.find((c) => c.id === value.id)?.color || value.color}
+                    onChange={(color) => config.updateMappingColor?.(value.id, color)}/></span>} {...getTagProps({index,})} />)
             ))}
             onChange={handleChange}
-            value={selectedVideoMaps}
+            value={activeVideoMaps as VideoMapWithMappings[]}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => <TextField {...params} label="Video Map(s)" variant="filled"/>}

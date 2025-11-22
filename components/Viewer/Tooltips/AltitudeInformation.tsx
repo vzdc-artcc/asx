@@ -1,16 +1,16 @@
 'use client';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useMap} from "react-leaflet";
+import {useMap, useMapEvent,} from "react-leaflet";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import * as leafletPip from "@mapbox/leaflet-pip";
 import L from "leaflet";
-import {GeoJSONWithColor} from "@/components/Viewer/Map/Map";
 import {GeoJsonObject} from "geojson";
 import {Paper, Typography} from "@mui/material";
+import {GeoJsonFile} from "@/components/Viewer/Map/Map";
 
 export default function AltitudeInformation({sectors, manualOwnedBy}: {
-    sectors: GeoJSONWithColor[],
+    sectors: GeoJsonFile[],
     manualOwnedBy: { // noinspection JSUnusedLocalSymbols
         [key: string]: string,
     }
@@ -26,22 +26,13 @@ export default function AltitudeInformation({sectors, manualOwnedBy}: {
     const [lng, setLng] = useState<number>();
     const map = useMap();
 
-    const getOwnerSector = useCallback((sector: GeoJSONWithColor, ownedBy?: string) => {
+    const getOwnerSector = useCallback((sector: GeoJsonFile, ownedBy?: string) => {
         if (!ownedBy) return sector;
 
         const ownedSector = sectors.find(s => s.key === ownedBy);
 
         return ownedSector || sector;
     }, [sectors]);
-
-    const updateCoords = useCallback(() => {
-        if (!map) return;
-
-        map.addEventListener('mousemove', (e) => {
-            setLat(e.latlng.lat);
-            setLng(e.latlng.lng);
-        });
-    }, [map]);
 
     const getPolygonsContaining = useCallback((geoJson: GeoJsonObject) => {
         if (!lat || !lng) return [];
@@ -51,79 +42,71 @@ export default function AltitudeInformation({sectors, manualOwnedBy}: {
         return leafletPip.pointInLayer([lng, lat], polygon);
     }, [lat, lng]);
 
+    useMapEvent('mousemove', (e: L.LeafletMouseEvent) => {
+        setLat(e.latlng.lat);
+        setLng(e.latlng.lng);
+    });
+
+
     useEffect(() => {
-        updateCoords();
+        if (!map || lat == null || lng == null) return;
+
+        const next: {
+            name: string;
+            key: string;
+            ownedBy: string;
+            altitude: string;
+        }[] = [];
 
         for (const sector of sectors) {
             const polygons = getPolygonsContaining(sector.json as unknown as GeoJsonObject);
             const ownerSector = getOwnerSector(sector, manualOwnedBy[sector.key]);
 
-            if (polygons.length > 0) {
-                const altitudes: string[] = Object.entries(polygons[0].feature.properties).filter(([k, v]) => k !== 'fid' && !!v).map(([v]) => v);
-                let firstNonNullAltitude = altitudes.find(Boolean);
+            if (polygons.length === 0) continue;
 
-                if (!firstNonNullAltitude) continue;
+            const altitudes: string[] = Object.entries(polygons[0].feature.properties)
+                .filter(([k, v]) => k !== 'fid' && !!v)
+                .map(([_, v]) => String(v));
 
-                const splitShelves = firstNonNullAltitude.split(' - ');
+            let firstNonNullAltitude = altitudes.find(Boolean);
+            if (!firstNonNullAltitude) continue;
 
-                for (const shelf of splitShelves) {
-                    let altitudeComponents = shelf.replace('FL', '').replace('SFC', '000').split(' ');
+            const splitShelves = firstNonNullAltitude.split(' - ');
 
-                    if (altitudeComponents.length !== 2) continue;
+            for (let i = 0; i < splitShelves.length; i++) {
+                const shelf = splitShelves[i];
+                let altitudeComponents = shelf.replace('FL', '').replace('SFC', '000').split(' ');
 
-                    const allNumbers = altitudeComponents.every(c => !isNaN(Number(c)));
+                if (altitudeComponents.length !== 2) continue;
+                const allNumbers = altitudeComponents.every(c => !isNaN(Number(c)));
+                if (!allNumbers) continue;
 
-                    if (!allNumbers) continue;
-
-                    if (Number(altitudeComponents[1]) < Number(altitudeComponents[0])) {
-                        altitudeComponents.reverse();
-                    }
-
-                    altitudeComponents = altitudeComponents.map(c => Number(c) === 0 ? '000' : c);
-
-                    const newShelf = altitudeComponents.join('-');
-
-                    const shelfIdx = splitShelves.indexOf(shelf);
-                    splitShelves[shelfIdx] = newShelf;
+                if (Number(altitudeComponents[1]) < Number(altitudeComponents[0])) {
+                    altitudeComponents.reverse();
                 }
 
-                firstNonNullAltitude = splitShelves.join(' / ');
-
-                setDisplayedAltitudes((prev) => {
-                    if (!prev) prev = [];
-
-                    const existingSectorAlt = prev.find(a => a.key === sector.key);
-
-                    if (existingSectorAlt && existingSectorAlt.altitude === firstNonNullAltitude) {
-                        return prev;
-                    }
-
-                    const name = ownerSector.json?.name || ownerSector.key;
-
-                    return [...prev.filter((p) => p.key !== sector.key), {
-                        name,
-                        altitude: firstNonNullAltitude,
-                        key: sector.key,
-                        ownedBy: ownerSector.key
-                    }];
-                });
-            } else {
-                setDisplayedAltitudes((prev) => {
-                    const uniqueSectors = new Map<string, typeof prev[0]>();
-                    for (let i = prev.length - 1; i >= 0; i--) {
-                        if (!uniqueSectors.has(prev[i].key) && prev[i].key !== sector.key) {
-                            uniqueSectors.set(prev[i].key, prev[i]);
-                        }
-                    }
-                    return Array.from(uniqueSectors.values());
-                });
+                altitudeComponents = altitudeComponents.map(c => Number(c) === 0 ? '000' : c);
+                splitShelves[i] = altitudeComponents.join('-');
             }
+
+            firstNonNullAltitude = splitShelves.join(' / ');
+
+            next.push({
+                name: ownerSector.json?.name || ownerSector.key,
+                altitude: firstNonNullAltitude,
+                key: sector.key,
+                ownedBy: ownerSector.key
+            });
         }
 
-        return () => {
-            map.removeEventListener('mousemove');
-        };
-    }, [map, updateCoords, getPolygonsContaining, sectors, getOwnerSector, manualOwnedBy]);
+        // keep last occurrence per sector.key (similar to original logic)
+        const unique = new Map<string, typeof next[0]>();
+        for (let i = next.length - 1; i >= 0; i--) {
+            unique.set(next[i].key, next[i]);
+        }
+
+        setDisplayedAltitudes(Array.from(unique.values()));
+    }, [map, lat, lng, sectors, getOwnerSector, getPolygonsContaining, manualOwnedBy]);
 
     const filteredDisplayedAltitudes = displayedAltitudes.filter((a) => sectors.map((s) => s.key).includes(a.key));
 

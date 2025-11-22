@@ -88,12 +88,19 @@ export const createOrUpdateVideoMap = async (formData: FormData) => {
         id: z.string().optional(),
         defaultEnabled: z.boolean().optional(),
         name: z.string().nonempty("Name is required"),
+        color: z.string().min(1, "Color is required.")
+            .transform((s) => {
+                const t = String(s).trim();
+                return t.startsWith('#') ? t : `#${t}`;
+            })
+            .refine(s => /^#[0-9A-Fa-f]{6}$/.test(s), {message: 'Explorer Color must be a 6-digit HEX color prefixed with #'}),
     })
 
     const result = vmZ.safeParse({
         id: formData.get('id') as string,
         defaultEnabled: formData.get('defaultEnabled') === 'on',
         name: formData.get('name') as string,
+        color: formData.get('color') as string,
     });
 
     if (!result.success) {
@@ -108,6 +115,7 @@ export const createOrUpdateVideoMap = async (formData: FormData) => {
             data: {
                 name: result.data.name,
                 defaultEnabled: result.data.defaultEnabled,
+                color: result.data.color,
             },
         });
 
@@ -123,6 +131,7 @@ export const createOrUpdateVideoMap = async (formData: FormData) => {
             data: {
                 name: result.data.name,
                 defaultEnabled: result.data.defaultEnabled,
+                color: result.data.color,
             },
         });
 

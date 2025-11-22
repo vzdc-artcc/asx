@@ -1,89 +1,55 @@
 'use client';
-import React, {useEffect} from 'react';
-import {RadarFacilityWithSectors} from "@/components/Viewer/AirspaceViewer";
+import React, {useContext} from 'react';
 import {Box, Divider, Typography} from "@mui/material";
 import FacilityAddForm from "@/components/Viewer/FacilitySelector/FacilityAddForm";
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import FacilityAccordion from "@/components/Viewer/FacilitySelector/FacilityAccordion";
-import {toast} from "react-toastify";
-import {IdsConsolidation} from "@/app/active-consolidations/page";
+import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
+import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 
-export default function FacilitySelector({allFacilities, idsConsolidations,}: {
-    allFacilities: RadarFacilityWithSectors[],
-    idsConsolidations?: IdsConsolidation[],
-}) {
+export default function FacilitySelector() {
 
+    const allData = useContext(AirspaceViewerDataContext);
+    const config = useContext(AirspaceViewerConfigContext);
 
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [activeFacilities, setActiveFacilities] = React.useState<RadarFacilityWithSectors[]>([]);
+    if (!config?.data || !allData) {
+        return <></>
+    }
 
-    useEffect(() => {
-
-        if (idsConsolidations) {
-            const filteredFacilities = filterFacilitiesAndSectors(allFacilities, idsConsolidations.flatMap(consolidation => consolidation.primarySectorId));
-            setActiveFacilities(filteredFacilities);
-            return;
-        }
-
-        const activeFacilityIds = searchParams.get('facilities')?.split(',') ?? [];
-        const activeFacilities = allFacilities.filter(facility => activeFacilityIds.includes(facility.id));
-        setActiveFacilities(activeFacilities);
-    }, [allFacilities, searchParams, idsConsolidations])
+    const activeFacilities = config.data.activeFacilities;
 
     const onAddFacility = (facilityId: string) => {
-        const newSearchParams = new URLSearchParams(searchParams);
-        const activeFacilityIds = newSearchParams.get('facilities')?.split(',') ?? [];
-        newSearchParams.set('facilities', [...activeFacilityIds, facilityId].join(','));
-        router.push(`${pathname}?${newSearchParams.toString()}`);
+        const newFacilityIds = [...activeFacilities.map(f => f.id), facilityId];
+        config.updateFacilities?.(newFacilityIds);
+        // const facility = allFacilities.find(facility => facility.id === facilityId);
+        // toast.success(`${facility?.name} added to explorer!`);
     }
 
     const onDeleteFacility = (facilityId: string) => {
-        const newSearchParams = new URLSearchParams(searchParams);
-
-        const activeFacilityIds = newSearchParams.get('facilities')?.split(',') ?? [];
-        newSearchParams.set('facilities', activeFacilityIds.filter(id => id !== facilityId).join(','));
-
-        const activeSectorIds = newSearchParams.get('sectors')?.split(',') ?? [];
-        const facility = allFacilities.find(facility => facility.id === facilityId);
-        const sectorIds = facility?.sectors.map(sector => sector.id) ?? [];
-        newSearchParams.set('sectors', activeSectorIds.filter(id => !sectorIds.includes(id)).join(','));
-
-        router.push(`${pathname}?${newSearchParams.toString()}`);
-        toast.success(`${facility?.name} removed from explorer!`);
+        const newFacilityIds = activeFacilities
+            .map(f => f.id)
+            .filter(id => id !== facilityId);
+        config.updateFacilities?.(newFacilityIds);
+        // const facility = allFacilities.find(facility => facility.id === facilityId);
+        // toast.info(`${facility?.name} removed from explorer.`);
     }
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', height: '100%'}}>
-            {!idsConsolidations && <>
-                <FacilityAddForm facilities={allFacilities} onSubmit={onAddFacility}/>
+            {!config.data?.liveConsolidations && <>
+                <FacilityAddForm onSubmit={onAddFacility}/>
                 <Divider sx={{my: 2,}}/>
             </>}
             <Typography variant="subtitle2" textAlign="center"
-                        gutterBottom>{idsConsolidations ? 'Online' : 'Selected'} Facilities</Typography>
+                        gutterBottom>{config.data?.liveConsolidations ? 'Online' : 'Selected'} Facilities</Typography>
             {activeFacilities.length === 0 &&
-                <Typography variant="subtitle1" textAlign="center">No facilities selected</Typography>}
+                <Typography variant="subtitle1" textAlign="center">No
+                    facilities {config.data.liveConsolidations ? 'online' : 'selected'}</Typography>}
             <Box sx={{flex: 1, overflow: 'auto'}}>
                 {activeFacilities.map(facility => (
                     <FacilityAccordion key={facility.id} facility={facility} onDelete={onDeleteFacility}
-                                       disableDelete={!!idsConsolidations}
-                                       defaultAllSelected={!!idsConsolidations && facility.autoSelectActiveConsolidations}/>
+                                       disableDelete={!!config.data?.liveConsolidations}/>
                 ))}
             </Box>
         </Box>
     );
-}
-
-const filterFacilitiesAndSectors = (allFacilities: RadarFacilityWithSectors[], filterSectorIds: string[]) => {
-
-    return allFacilities
-        .filter((f) => f.sectors
-            .flatMap((s) => s.idsRadarSectorId)
-            .some((id) => filterSectorIds.includes(id)))
-        .map(facility => {
-            const sectors = facility.sectors
-                .filter(sector => filterSectorIds.includes(sector.idsRadarSectorId));
-            return {...facility, sectors};
-        });
 }

@@ -29,6 +29,8 @@ export default function VideoMapForm({ videoMap }: { videoMap?: VideoMap, }) {
         <Form action={handleSubmit}>
             <input type="hidden" name="id" value={videoMap?.id || ''} />
             <TextField name="name" label="Name *" variant="filled" defaultValue={videoMap?.name} fullWidth sx={{ mb: 2, }} />
+            <TextField name="color" label="Color *" variant="filled" defaultValue={videoMap?.color} fullWidth
+                       sx={{mb: 2,}}/>
             <FormControlLabel control={<Checkbox defaultChecked={videoMap?.defaultEnabled} name="defaultEnabled"/>}
                               label="Enabled by default?"/>
             <br/>

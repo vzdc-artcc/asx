@@ -18,16 +18,15 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
     }
 
     const activeSectors = config.data.activeSectors.filter((sector) => sectors.map(s => s.id).includes(sector.id));
+    const allActiveSectorIds = config.data.activeSectors.map(s => s.id);
 
     const onAddSector = (sectorId: string) => {
-        const newSectorIds = [...activeSectors.map(s => s.id), sectorId];
+        const newSectorIds = [...allActiveSectorIds, sectorId];
         config.updateSectors?.(newSectorIds);
     }
 
     const onRemoveSector = (sectorId: string) => {
-        const newSectorIds = activeSectors
-            .map(s => s.id)
-            .filter(id => id !== sectorId);
+        const newSectorIds = allActiveSectorIds.filter(id => id !== sectorId);
         config.updateSectors?.(newSectorIds);
     }
 

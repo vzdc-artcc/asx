@@ -225,19 +225,18 @@ const fetchJson = async (key: string) => {
 }
 
 const fulfillGeoJsonRequests = async (requests: GeoJsonRequest[]) => {
-    const geoJsonFiles: GeoJsonFile[] = [];
+    return await Promise.all(
+        requests.map(async (request) => {
+            const json = await fetchJson(request.key);
 
-    for (const request of requests) {
-        const json = await fetchJson(request.key);
-        geoJsonFiles.push({
-            key: request.key,
-            json,
-            color: request.color,
-        });
-    }
-
-    return geoJsonFiles;
-}
+            return {
+                key: request.key,
+                json,
+                color: request.color,
+            };
+        })
+    );
+};
 
 const EmptyViewer = (
     <Card>

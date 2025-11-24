@@ -2,7 +2,6 @@
 import React, {useContext} from 'react';
 import {Checkbox, FormControlLabel, FormGroup, Stack, Typography} from "@mui/material";
 import {getConditionChips} from "@/lib/chips";
-import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import {SectorMappingWithConditions} from "@/types/airspace_viewer";
 import FacilityColorPicker from "@/components/Viewer/FacilitySelector/FacilityColorPicker";
@@ -10,10 +9,9 @@ import {getMappingColor} from "@/lib/color";
 
 export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWithConditions[], }) {
 
-    const allData = useContext(AirspaceViewerDataContext);
     const config = useContext(AirspaceViewerConfigContext);
 
-    if (!config?.data || !allData) {
+    if (!config?.data) {
         return <></>
     }
 

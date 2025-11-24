@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {useState} from 'react';
 import {Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
 import {AirspaceCondition} from "@prisma/client";
 import {toast} from "react-toastify";
@@ -21,8 +21,8 @@ export default function AirspaceConditionDialog({
     onSubmit: (conditionId: string) => void,
 }) {
 
-    const [selectedContainer, setSelectedContainer] = React.useState<AirspaceContainerWithConditions | null>(null);
-    const [selectedCondition, setSelectedCondition] = React.useState<AirspaceCondition | null>(defaultSelectedCondition || null);
+    const [selectedContainer, setSelectedContainer] = useState<AirspaceContainerWithConditions | null>(null);
+    const [selectedCondition, setSelectedCondition] = useState<AirspaceCondition | null>(defaultSelectedCondition || null);
 
     const submit = () => {
         if ((!selectedContainer && !defaultSelectedContainer) || (!selectedCondition && !defaultSelectedCondition)) {

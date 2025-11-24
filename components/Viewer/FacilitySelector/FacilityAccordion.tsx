@@ -26,10 +26,9 @@ export default function FacilityAccordion({facility, onDelete, disableDelete}: {
 
     const [open, setOpen] = useState(false);
 
-    const allData = useContext(AirspaceViewerDataContext);
     const config = useContext(AirspaceViewerConfigContext);
 
-    if (!config?.data || !allData) {
+    if (!config?.data) {
         return <></>
     }
 

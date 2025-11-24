@@ -8,10 +8,9 @@ import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContex
 
 export default function FacilitySelector() {
 
-    const allData = useContext(AirspaceViewerDataContext);
     const config = useContext(AirspaceViewerConfigContext);
 
-    if (!config?.data || !allData) {
+    if (!config?.data) {
         return <></>
     }
 

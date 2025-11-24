@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import {Delete, ExpandMore} from "@mui/icons-material";
 import SectorCheckboxes from "@/components/Viewer/FacilitySelector/SectorCheckboxes";
-import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import FacilityColorPicker from "@/components/Viewer/FacilitySelector/FacilityColorPicker";
 import {getMappingColor} from "@/lib/color";

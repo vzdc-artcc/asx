@@ -3,7 +3,6 @@ import React, {useContext} from 'react';
 import {Box, Divider, Typography} from "@mui/material";
 import FacilityAddForm from "@/components/Viewer/FacilitySelector/FacilityAddForm";
 import FacilityAccordion from "@/components/Viewer/FacilitySelector/FacilityAccordion";
-import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 
 export default function FacilitySelector() {

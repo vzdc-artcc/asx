@@ -9,6 +9,8 @@ import Map from "@/components/Viewer/Map/Map";
 import {Home, Info} from "@mui/icons-material";
 import Link from "next/link";
 import ConfigImportExportButton from "@/components/Viewer/ConfigImportExportButton";
+import RouteAddForm from "@/components/Viewer/Route/RouteAddForm";
+import RouteList from "@/components/Viewer/Route/RouteList";
 
 const {IDS_CONSOLIDATIONS_URL} = process.env;
 
@@ -59,18 +61,31 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                     </Grid2>
                     <Grid2 size={{xs: 10, md: 3, xl: 2,}}
                            sx={{height: {xs: '300px', md: 'calc(100vh - 64px - 96px)',},}}>
-                        <Card sx={{height: '100%', overflow: 'auto',}}>
-                            <CardContent>
-                                <Box sx={{height: '100%',}}>
-                                    <Typography variant="h6" textAlign="center" gutterBottom>Map
-                                        Settings <ConfigImportExportButton/></Typography>
-                                    <Divider sx={{my: 2,}}/>
-                                    <VideoMapSelector/>
-                                    <Divider sx={{my: 2,}}/>
-                                    <FacilitySelector/>
-                                </Box>
-                            </CardContent>
-                        </Card>
+                        <Stack direction="column" spacing={2} sx={{ height: '100%',}}>
+                            <Card sx={{height: '50%', overflow: 'auto',}}>
+                                <CardContent>
+                                    <Box sx={{height: '100%',}}>
+                                        <Typography variant="h6" textAlign="center" gutterBottom>Map
+                                            Settings <ConfigImportExportButton/></Typography>
+                                        <Divider sx={{my: 2,}}/>
+                                        <VideoMapSelector/>
+                                        <Divider sx={{my: 2,}}/>
+                                        <FacilitySelector/>
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                            <Card sx={{height: '50%', overflow: 'auto',}}>
+                                <CardContent>
+                                    <Box sx={{height: '100%', textAlign: 'center',}}>
+                                        <Typography variant="h6" textAlign="center" gutterBottom>Route/Point Projection</Typography>
+                                        <Divider sx={{my: 2,}}/>
+                                        <RouteAddForm />
+                                        <Divider sx={{my: 2,}}/>
+                                        <RouteList />
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                        </Stack>
                     </Grid2>
                     <Grid2 size={{xs: 10, md: 7, xl: 8,}}
                            sx={{height: {xs: '100vh', md: 'calc(100vh - 64px - 96px)',},}}>

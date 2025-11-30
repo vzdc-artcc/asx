@@ -9,6 +9,7 @@ import React, {createContext, useCallback, useContext, useEffect, useState} from
 import {fetchDefaultInformation} from "@/actions/data";
 import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
 import {IdsConsolidation} from "@/types/ids";
+import {RouteDisplayData} from "@/types/route";
 
 export type ColorOverride = {
     id: string;
@@ -17,12 +18,13 @@ export type ColorOverride = {
 
 export type AirspaceViewerConfig = {
     data?: AirspaceViewerData;
-    updateMappingColor?: (id: string, color?: string) => void;
+    updateColor?: (id: string, color?: string) => void;
     updateVideoMaps?: (videoMapIds: string[]) => void;
     updateSectors?: (sectorIds: string[]) => void;
     updateFacilities?: (facilityIds: string[]) => void;
     updateConditions?: (conditionIds: string[]) => void;
     updateConfig?: (newData: AirspaceViewerData) => void;
+    updateRoutes?: (routes: RouteDisplayData[]) => void;
 }
 
 export type AirspaceViewerData = {
@@ -33,6 +35,7 @@ export type AirspaceViewerData = {
     liveConsolidations?: IdsConsolidation[];
     renderableIds?: string[];
     colorOverrides: ColorOverride[];
+    routes: RouteDisplayData[];
 };
 
 export const defaultValue: AirspaceViewerConfig = {};
@@ -117,7 +120,7 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
         }));
     }, [allData]);
 
-    const updateMappingColor = useCallback((id: string, color?: string) => {
+    const updateColor = useCallback((id: string, color?: string) => {
         setData((prevData) => {
             if (!prevData.data) return prevData;
 
@@ -152,6 +155,16 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
         }));
     }, []);
 
+    const updateRoutes = useCallback((routes: RouteDisplayData[]) => {
+        setData((prevData) => ({
+            ...prevData,
+            data: {
+                ...prevData.data,
+                routes,
+            } as AirspaceViewerData,
+        }));
+    }, []);
+
     useEffect(() => {
         if (!allData) {
             return;
@@ -165,6 +178,7 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
                 activeSectors: [],
                 activeFacilities: [],
                 colorOverrides: [],
+                routes: [],
             };
 
             if (liveConsolidations) {
@@ -201,11 +215,12 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
                 updateVideoMaps,
                 updateFacilities,
                 updateSectors,
-                updateMappingColor,
-                updateConfig
+                updateColor,
+                updateConfig,
+                updateRoutes,
             });
         });
-    }, [liveConsolidations, allData, updateConditions, updateVideoMaps, updateFacilities, updateSectors, updateMappingColor, updateConfig]);
+    }, [liveConsolidations, allData, updateConditions, updateVideoMaps, updateFacilities, updateSectors, updateColor, updateConfig, updateRoutes]);
 
     return (
         <AirspaceViewerConfigContext.Provider value={data}>

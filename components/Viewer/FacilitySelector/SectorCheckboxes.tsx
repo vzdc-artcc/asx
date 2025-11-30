@@ -50,7 +50,7 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
                             <Typography>{sector.name}</Typography>
                             <FacilityColorPicker
                                 existingColor={getMappingColor(!!config.data?.liveConsolidations, sector, config.data?.colorOverrides || [])}
-                                onChange={(color) => config.updateMappingColor?.(sector.id, color)}/>
+                                onChange={(color) => config.updateColor?.(sector.id, color)}/>
                             {getConditionChips(sector.mappings.flatMap(mapping => mapping.airspaceCondition).filter((ac) => !!ac))}
                         </Stack>
                         <Typography variant="subtitle2">{sector.frequency}</Typography>

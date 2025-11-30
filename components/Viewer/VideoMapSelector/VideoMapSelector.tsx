@@ -33,7 +33,7 @@ export default function VideoMapSelector() {
                 // eslint-disable-next-line react/jsx-key
                 (<Chip label={<span>{value.name} <FacilityColorPicker
                     existingColor={config.data?.colorOverrides.find((c) => c.id === value.id)?.color || value.color}
-                    onChange={(color) => config.updateMappingColor?.(value.id, color)}/></span>} {...getTagProps({index,})} />)
+                    onChange={(color) => config.updateColor?.(value.id, color)}/></span>} {...getTagProps({index,})} />)
             ))}
             onChange={handleChange}
             value={activeVideoMaps as VideoMapWithMappings[]}

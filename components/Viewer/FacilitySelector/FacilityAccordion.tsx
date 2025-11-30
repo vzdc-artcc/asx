@@ -68,7 +68,7 @@ export default function FacilityAccordion({facility, onDelete, disableDelete}: {
     }
 
     const updateAllActiveSectorColors = (color?: string) => {
-        sectors.forEach((sector) => config.updateMappingColor?.(sector.id, color));
+        sectors.forEach((sector) => config.updateColor?.(sector.id, color));
     }
 
     return (

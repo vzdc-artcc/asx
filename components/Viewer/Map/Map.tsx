@@ -16,6 +16,7 @@ import AltitudeInformationWrapper from "@/components/Viewer/Tooltips/AltitudeInf
 import ColorLegendWrapper from "@/components/Viewer/Tooltips/ColorLegendWrapper";
 import {useColorScheme} from "@mui/material/styles";
 import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
+import { Polyline, CircleMarker, Tooltip as LeafletTooltip } from 'react-leaflet';
 
 const CENTER_LAT = Number(process.env['NEXT_PUBLIC_MAP_DEFAULT_CENTER_LAT']) || 36.5;
 const CENTER_LONG = Number(process.env['NEXT_PUBLIC_MAP_DEFAULT_CENTER_LONG']) || -77;
@@ -152,6 +153,8 @@ export default function Map() {
         return EmptyViewer;
     }
 
+    const routes = config?.data?.routes.filter((route) => route.displayed) || [];
+
     return (
         <Card sx={{height: '100%', display: 'flex', flexDirection: 'column',}}>
             <CardContent sx={{
@@ -184,6 +187,34 @@ export default function Map() {
                                 interactive={false}
                             />
                         ))}
+                        {}
+                        {/* Render routes: polyline for route path, and waypoint labels when enabled */}
+                        {routes.map((route) => {
+                            const colorOverride = config?.data?.colorOverrides.find((c) => c.id === route.id)?.color || '#FF0000';
+                            const positions = route.coordinates.map((c) => [c.latitude, c.longitude] as [number, number]);
+
+                            return (
+                                <React.Fragment key={route.id}>
+                                    {positions.length >= 2 && (
+                                        <Polyline positions={positions} pathOptions={{color: colorOverride, weight: 2}} />
+                                    )}
+
+                                    {route.showLabels && route.coordinates.map((coord, idx) => (
+                                        <CircleMarker
+                                            key={`${route.id}-wp-${idx}`}
+                                            center={[coord.latitude, coord.longitude]}
+                                            radius={4}
+                                            pathOptions={{color: colorOverride, fillColor: colorOverride, fillOpacity: 1}}
+                                            interactive={false}
+                                        >
+                                            <LeafletTooltip direction="right" permanent offset={[8, 0]}>
+                                                {coord.name}
+                                            </LeafletTooltip>
+                                        </CircleMarker>
+                                    ))}
+                                </React.Fragment>
+                            );
+                        })}
 
                         <AltitudeInformationWrapper sectors={files} ownedBy={ownedBy || {}}/>
                         <ColorLegendWrapper colorLegend={colorLegend}/>

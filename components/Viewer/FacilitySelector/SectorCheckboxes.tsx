@@ -1,11 +1,12 @@
 'use client';
 import React, {useContext} from 'react';
-import {Checkbox, FormControlLabel, FormGroup, Stack, Typography} from "@mui/material";
+import {Checkbox, FormControlLabel, FormGroup, IconButton, Stack, Tooltip, Typography} from "@mui/material";
 import {getConditionChips} from "@/lib/chips";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import {SectorMappingWithConditions} from "@/types/airspace_viewer";
 import FacilityColorPicker from "@/components/Viewer/FacilitySelector/FacilityColorPicker";
 import {getMappingColor} from "@/lib/color";
+import {SpeakerNotes, SpeakerNotesOff} from "@mui/icons-material";
 
 export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWithConditions[], }) {
 
@@ -38,6 +39,17 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
         }
     }
 
+    const handleToggleLegend = (sectorId: string) => {
+        const legendIds = config.data?.legendIds || [];
+        if (legendIds.includes(sectorId)) {
+            const newLegendIds = legendIds.filter(id => id !== sectorId);
+            config.updateLegends?.(newLegendIds);
+        } else {
+            const newLegendIds = [...legendIds, sectorId];
+            config.updateLegends?.(newLegendIds);
+        }
+    }
+
     return (
         <FormGroup>
             {sectors.sort((a, b) => a.name.localeCompare(b.name)).map(sector => (
@@ -51,6 +63,11 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
                             <FacilityColorPicker
                                 existingColor={getMappingColor(!!config.data?.liveConsolidations, sector, config.data?.colorOverrides || [])}
                                 onChange={(color) => config.updateColor?.(sector.id, color)}/>
+                            <Tooltip title="Show in Legend">
+                                <IconButton onClick={() => handleToggleLegend(sector.id)}>
+                                    {(config.data?.legendIds || []).includes(sector.id) ? <SpeakerNotesOff /> : <SpeakerNotes />}
+                                </IconButton>
+                            </Tooltip>
                             {getConditionChips(sector.mappings.flatMap(mapping => mapping.airspaceCondition).filter((ac) => !!ac))}
                         </Stack>
                         <Typography variant="subtitle2">{sector.frequency}</Typography>

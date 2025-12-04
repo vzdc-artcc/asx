@@ -98,7 +98,7 @@ export default function Map() {
                 color: sectorColor,
             });
 
-            if (liveConsolidations) {
+            if (config.data.legendIds.includes(sector.id)) {
                 const legendKey = `${sectorColor}::${sector.name}`;
                 if (!colorLegendSet.has(legendKey)) {
                     colorLegendSet.add(legendKey);
@@ -109,24 +109,26 @@ export default function Map() {
                     });
                 }
 
-                const secondarySectorIds = liveConsolidations
-                    .filter(consolidation => consolidation.primarySectorId === sector.idsRadarSectorId)
-                    .flatMap(consolidation => consolidation.secondarySectorIds);
+                if (liveConsolidations) {
+                    const secondarySectorIds = liveConsolidations
+                        .filter(consolidation => consolidation.primarySectorId === sector.idsRadarSectorId)
+                        .flatMap(consolidation => consolidation.secondarySectorIds);
 
-                const secondarySectors = addSecondaryConsolidationSectors(secondarySectorIds, allData.allRadarFacilities.flatMap((fac) => fac.sectors));
+                    const secondarySectors = addSecondaryConsolidationSectors(secondarySectorIds, allData.allRadarFacilities.flatMap((fac) => fac.sectors));
 
-                for (const secondarySector of secondarySectors) {
-                    const secondaryMappingJson = getMappingJsonForConditions(secondarySector.mappings, activeConditions);
-                    if (typeof secondaryMappingJson === 'string') {
-                        errorOccurred = secondaryMappingJson;
-                        break;
-                    }
-                    if (secondaryMappingJson) {
-                        geoJsonToRequest.push({
-                            key: secondaryMappingJson.jsonKey,
-                            color: sectorColor,
-                        });
-                        newOwnedBy[secondaryMappingJson.jsonKey] = mappingJson.jsonKey;
+                    for (const secondarySector of secondarySectors) {
+                        const secondaryMappingJson = getMappingJsonForConditions(secondarySector.mappings, activeConditions);
+                        if (typeof secondaryMappingJson === 'string') {
+                            errorOccurred = secondaryMappingJson;
+                            break;
+                        }
+                        if (secondaryMappingJson) {
+                            geoJsonToRequest.push({
+                                key: secondaryMappingJson.jsonKey,
+                                color: sectorColor,
+                            });
+                            newOwnedBy[secondaryMappingJson.jsonKey] = mappingJson.jsonKey;
+                        }
                     }
                 }
             }

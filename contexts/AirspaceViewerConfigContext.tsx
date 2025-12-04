@@ -25,6 +25,7 @@ export type AirspaceViewerConfig = {
     updateConditions?: (conditionIds: string[]) => void;
     updateConfig?: (newData: AirspaceViewerData) => void;
     updateRoutes?: (routes: RouteDisplayData[]) => void;
+    updateLegends?: (legendIds: string[]) => void;
 }
 
 export type AirspaceViewerData = {
@@ -35,6 +36,7 @@ export type AirspaceViewerData = {
     liveConsolidations?: IdsConsolidation[];
     renderableIds?: string[];
     colorOverrides: ColorOverride[];
+    legendIds: string[];
     routes: RouteDisplayData[];
 };
 
@@ -165,6 +167,16 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
         }));
     }, []);
 
+    const updateLegends = useCallback((legendIds: string[]) => {
+        setData((prevData) => ({
+            ...prevData,
+            data: {
+                ...prevData.data,
+                legendIds,
+            } as AirspaceViewerData,
+        }));
+    }, []);
+
     useEffect(() => {
         if (!allData) {
             return;
@@ -179,11 +191,13 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
                 activeFacilities: [],
                 colorOverrides: [],
                 routes: [],
+                legendIds: [],
             };
 
             if (liveConsolidations) {
                 const renderableIds: string[] = [];
                 const activeSectors: SectorMappingWithConditions[] = [];
+                const legendIds: string[] = [];
 
                 for (const consol of liveConsolidations) {
                     const primarySector = findSectorByIdsId(consol.primarySectorId, allData?.allRadarFacilities);
@@ -195,6 +209,7 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
                         if (radarFacility) {
                             if (radarFacility.autoSelectActiveConsolidations) {
                                 activeSectors.push(primarySector);
+                                legendIds.push(primarySector.id);
                             }
 
                             if (!result.activeFacilities.some((fac) => fac.id === radarFacility.id)) {
@@ -207,6 +222,7 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
 
                 result.activeSectors = activeSectors;
                 result.renderableIds = renderableIds;
+                result.legendIds = legendIds;
             }
 
             setData({
@@ -218,9 +234,10 @@ export const AirspaceViewerConfigProvider = ({liveConsolidations, children}: {
                 updateColor,
                 updateConfig,
                 updateRoutes,
+                updateLegends,
             });
         });
-    }, [liveConsolidations, allData, updateConditions, updateVideoMaps, updateFacilities, updateSectors, updateColor, updateConfig, updateRoutes]);
+    }, [liveConsolidations, allData, updateConditions, updateVideoMaps, updateFacilities, updateSectors, updateColor, updateConfig, updateRoutes, updateLegends]);
 
     return (
         <AirspaceViewerConfigContext.Provider value={data}>

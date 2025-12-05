@@ -7,6 +7,7 @@ import {SectorMappingWithConditions} from "@/types/airspace_viewer";
 import FacilityColorPicker from "@/components/Viewer/FacilitySelector/FacilityColorPicker";
 import {getMappingColor} from "@/lib/color";
 import {SpeakerNotes, SpeakerNotesOff} from "@mui/icons-material";
+import SectorLegendToggle from "@/components/Viewer/FacilitySelector/SectorLegendToggle";
 
 export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWithConditions[], }) {
 
@@ -39,17 +40,6 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
         }
     }
 
-    const handleToggleLegend = (sectorId: string) => {
-        const legendIds = config.data?.legendIds || [];
-        if (legendIds.includes(sectorId)) {
-            const newLegendIds = legendIds.filter(id => id !== sectorId);
-            config.updateLegends?.(newLegendIds);
-        } else {
-            const newLegendIds = [...legendIds, sectorId];
-            config.updateLegends?.(newLegendIds);
-        }
-    }
-
     return (
         <FormGroup>
             {sectors.sort((a, b) => a.name.localeCompare(b.name)).map(sector => (
@@ -63,16 +53,7 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
                             <FacilityColorPicker
                                 existingColor={getMappingColor(!!config.data?.liveConsolidations, sector, config.data?.colorOverrides || [])}
                                 onChange={(color) => config.updateColor?.(sector.id, color)}/>
-                            <Box>
-                                <Tooltip title="Show in Legend">
-                                    <IconButton onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleToggleLegend(sector.id)
-                                    }} size="small">
-                                        {(config.data?.legendIds || []).includes(sector.id) ? <SpeakerNotesOff fontSize="small" /> : <SpeakerNotes fontSize="small" />}
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
+                            <SectorLegendToggle sectorId={sector.id} />
                             {getConditionChips(sector.mappings.flatMap(mapping => mapping.airspaceCondition).filter((ac) => !!ac))}
                         </Stack>
                         <Typography variant="subtitle2">{sector.frequency}</Typography>

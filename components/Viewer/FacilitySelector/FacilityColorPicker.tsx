@@ -30,7 +30,7 @@ export default function FacilityColorPicker({existingColor, onChange}: {
 
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogContent>
-                    <HexColorPicker color={color} onChange={handleColorChange}/>
+                    <HexColorPicker color={color || existingColor} onChange={handleColorChange}/>
                 </DialogContent>
             </Dialog>
         </>

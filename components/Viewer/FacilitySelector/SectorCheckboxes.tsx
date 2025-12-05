@@ -1,6 +1,6 @@
 'use client';
 import React, {useContext} from 'react';
-import {Checkbox, FormControlLabel, FormGroup, IconButton, Stack, Tooltip, Typography} from "@mui/material";
+import {Box, Checkbox, FormControlLabel, FormGroup, IconButton, Stack, Tooltip, Typography} from "@mui/material";
 import {getConditionChips} from "@/lib/chips";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import {SectorMappingWithConditions} from "@/types/airspace_viewer";
@@ -63,11 +63,13 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
                             <FacilityColorPicker
                                 existingColor={getMappingColor(!!config.data?.liveConsolidations, sector, config.data?.colorOverrides || [])}
                                 onChange={(color) => config.updateColor?.(sector.id, color)}/>
-                            <Tooltip title="Show in Legend">
-                                <IconButton onClick={() => handleToggleLegend(sector.id)}>
-                                    {(config.data?.legendIds || []).includes(sector.id) ? <SpeakerNotesOff /> : <SpeakerNotes />}
-                                </IconButton>
-                            </Tooltip>
+                            <Box>
+                                <Tooltip title="Show in Legend">
+                                    <IconButton onClick={() => handleToggleLegend(sector.id)}>
+                                        {(config.data?.legendIds || []).includes(sector.id) ? <SpeakerNotesOff /> : <SpeakerNotes />}
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
                             {getConditionChips(sector.mappings.flatMap(mapping => mapping.airspaceCondition).filter((ac) => !!ac))}
                         </Stack>
                         <Typography variant="subtitle2">{sector.frequency}</Typography>

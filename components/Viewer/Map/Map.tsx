@@ -16,7 +16,7 @@ import AltitudeInformationWrapper from "@/components/Viewer/Tooltips/AltitudeInf
 import ColorLegendWrapper from "@/components/Viewer/Tooltips/ColorLegendWrapper";
 import {useColorScheme} from "@mui/material/styles";
 import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
-import { Polyline, CircleMarker, Tooltip as LeafletTooltip } from 'react-leaflet';
+import {CircleMarker, Polyline, Tooltip as LeafletTooltip} from 'react-leaflet';
 
 const CENTER_LAT = Number(process.env['NEXT_PUBLIC_MAP_DEFAULT_CENTER_LAT']) || 36.5;
 const CENTER_LONG = Number(process.env['NEXT_PUBLIC_MAP_DEFAULT_CENTER_LONG']) || -77;
@@ -108,27 +108,27 @@ export default function Map() {
                         frequency: sector.frequency,
                     });
                 }
+            }
 
-                if (liveConsolidations) {
-                    const secondarySectorIds = liveConsolidations
-                        .filter(consolidation => consolidation.primarySectorId === sector.idsRadarSectorId)
-                        .flatMap(consolidation => consolidation.secondarySectorIds);
+            if (liveConsolidations) {
+                const secondarySectorIds = liveConsolidations
+                    .filter(consolidation => consolidation.primarySectorId === sector.idsRadarSectorId)
+                    .flatMap(consolidation => consolidation.secondarySectorIds);
 
-                    const secondarySectors = addSecondaryConsolidationSectors(secondarySectorIds, allData.allRadarFacilities.flatMap((fac) => fac.sectors));
+                const secondarySectors = addSecondaryConsolidationSectors(secondarySectorIds, allData.allRadarFacilities.flatMap((fac) => fac.sectors));
 
-                    for (const secondarySector of secondarySectors) {
-                        const secondaryMappingJson = getMappingJsonForConditions(secondarySector.mappings, activeConditions);
-                        if (typeof secondaryMappingJson === 'string') {
-                            errorOccurred = secondaryMappingJson;
-                            break;
-                        }
-                        if (secondaryMappingJson) {
-                            geoJsonToRequest.push({
-                                key: secondaryMappingJson.jsonKey,
-                                color: sectorColor,
-                            });
-                            newOwnedBy[secondaryMappingJson.jsonKey] = mappingJson.jsonKey;
-                        }
+                for (const secondarySector of secondarySectors) {
+                    const secondaryMappingJson = getMappingJsonForConditions(secondarySector.mappings, activeConditions);
+                    if (typeof secondaryMappingJson === 'string') {
+                        errorOccurred = secondaryMappingJson;
+                        break;
+                    }
+                    if (secondaryMappingJson) {
+                        geoJsonToRequest.push({
+                            key: secondaryMappingJson.jsonKey,
+                            color: sectorColor,
+                        });
+                        newOwnedBy[secondaryMappingJson.jsonKey] = mappingJson.jsonKey;
                     }
                 }
             }

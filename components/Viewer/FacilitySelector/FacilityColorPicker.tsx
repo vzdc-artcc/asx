@@ -1,6 +1,6 @@
 'use client';
 import React, {useState} from 'react';
-import {Dialog, DialogContent, IconButton} from "@mui/material";
+import {Dialog, DialogContent, IconButton, Tooltip} from "@mui/material";
 import {FormatColorReset, Palette} from "@mui/icons-material";
 import {HexColorPicker} from "react-colorful";
 
@@ -22,9 +22,12 @@ export default function FacilityColorPicker({existingColor, onChange}: {
             <IconButton size="small" onClick={() => setOpen(true)}>
                 <Palette fontSize="small" sx={{color: existingColor,}}/>
             </IconButton>
-            <IconButton size="small" onClick={() => handleColorChange(undefined)}>
-                <FormatColorReset fontSize="small"/>
-            </IconButton>
+            <Tooltip title="Reset Color">
+                <IconButton size="small" onClick={() => handleColorChange(undefined)}>
+                    <FormatColorReset fontSize="small"/>
+                </IconButton>
+            </Tooltip>
+
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogContent>
                     <HexColorPicker color={color} onChange={handleColorChange}/>

@@ -1,6 +1,6 @@
 'use client';
 import React, {useContext} from 'react';
-import {IconButton} from "@mui/material";
+import {IconButton, Tooltip} from "@mui/material";
 import {SpeakerNotes, SpeakerNotesOff} from "@mui/icons-material";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 
@@ -9,7 +9,6 @@ function SectorLegendToggle({ sectorId }: { sectorId: string }) {
     const config = useContext(AirspaceViewerConfigContext);
 
     const handleToggleLegend = () => {
-
         const legendIds = config.data?.legendIds || [];
         if (legendIds.includes(sectorId)) {
             const newLegendIds = legendIds.filter(id => id !== sectorId);
@@ -21,10 +20,15 @@ function SectorLegendToggle({ sectorId }: { sectorId: string }) {
     }
 
     return (
-        <IconButton onClick={handleToggleLegend} size="small">
-            {(config.data?.legendIds || []).includes(sectorId) ? <SpeakerNotesOff fontSize="small"/> :
-                <SpeakerNotes fontSize="small"/>}
-        </IconButton>
+        <Tooltip title="Show/Hide from Legend">
+            <IconButton onClick={(e) => {
+                e.preventDefault();
+                handleToggleLegend()
+            }} size="small">
+                {(config.data?.legendIds || []).includes(sectorId) ? <SpeakerNotesOff fontSize="small"/> :
+                    <SpeakerNotes fontSize="small"/>}
+            </IconButton>
+        </Tooltip>
     );
 }
 

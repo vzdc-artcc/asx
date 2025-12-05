@@ -65,7 +65,10 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
                                 onChange={(color) => config.updateColor?.(sector.id, color)}/>
                             <Box>
                                 <Tooltip title="Show in Legend">
-                                    <IconButton onClick={() => handleToggleLegend(sector.id)} size="small">
+                                    <IconButton onMouseDown={(e) => e.stopPropagation()} onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleToggleLegend(sector.id)
+                                    }} size="small">
                                         {(config.data?.legendIds || []).includes(sector.id) ? <SpeakerNotesOff fontSize="small" /> : <SpeakerNotes fontSize="small" />}
                                     </IconButton>
                                 </Tooltip>

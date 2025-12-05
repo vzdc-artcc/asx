@@ -1,6 +1,6 @@
 'use client';
 import React, {useContext} from 'react';
-import {IconButton, Tooltip} from "@mui/material";
+import {IconButton} from "@mui/material";
 import {SpeakerNotes, SpeakerNotesOff} from "@mui/icons-material";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 
@@ -21,11 +21,10 @@ function SectorLegendToggle({ sectorId }: { sectorId: string }) {
     }
 
     return (
-        <Tooltip title="Show in Legend">
-            <IconButton onClick={handleToggleLegend} size="small">
-                {(config.data?.legendIds || []).includes(sectorId) ? <SpeakerNotesOff fontSize="small" /> : <SpeakerNotes fontSize="small" />}
-            </IconButton>
-        </Tooltip>
+        <IconButton onClick={handleToggleLegend} size="small">
+            {(config.data?.legendIds || []).includes(sectorId) ? <SpeakerNotesOff fontSize="small"/> :
+                <SpeakerNotes fontSize="small"/>}
+        </IconButton>
     );
 }
 

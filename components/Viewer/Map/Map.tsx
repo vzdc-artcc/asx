@@ -17,6 +17,7 @@ import ColorLegendWrapper from "@/components/Viewer/Tooltips/ColorLegendWrapper"
 import {useColorScheme} from "@mui/material/styles";
 import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
 import {CircleMarker, Polyline, Tooltip as LeafletTooltip} from 'react-leaflet';
+import {fetchJson} from "@/lib/json";
 
 const CENTER_LAT = Number(process.env['NEXT_PUBLIC_MAP_DEFAULT_CENTER_LAT']) || 36.5;
 const CENTER_LONG = Number(process.env['NEXT_PUBLIC_MAP_DEFAULT_CENTER_LONG']) || -77;
@@ -250,11 +251,6 @@ const getMappingJsonForConditions = (
 
 const addSecondaryConsolidationSectors = (secondarySectorIds: string[], allSectors: SectorMappingWithConditions[]) => {
     return allSectors.filter(sector => secondarySectorIds.includes(sector.idsRadarSectorId));
-}
-
-const fetchJson = async (key: string) => {
-    const res = await fetch(`https://utfs.io/f/${key}`);
-    return await res.json();
 }
 
 const fulfillGeoJsonRequests = async (requests: GeoJsonRequest[]) => {

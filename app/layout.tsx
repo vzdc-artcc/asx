@@ -10,6 +10,7 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
 import {ToastContainer} from "react-toastify";
 import {Metadata} from "next";
+import Script from "next/script"
 
 const roboto = Roboto({
     weight: ['300', '400', '500', '700'],

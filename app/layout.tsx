@@ -38,6 +38,11 @@ export default async function RootLayout({
         <ThemeProvider theme={theme}>
             <Navbar session={session}/>
             {children}
+            <Script
+                src="https://rybbit.vzdc.org/api/script.js"
+                data-site-id={process.env.NEXT_PUBLIC_RYBBIT_SITE_ID}
+                strategy="afterInteractive"
+            />
             <ToastContainer theme="dark"/>
         </ThemeProvider>
     </AppRouterCacheProvider>

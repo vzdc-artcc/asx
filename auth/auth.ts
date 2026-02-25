@@ -5,6 +5,7 @@ import prisma from "@/lib/db";
 import {PrismaAdapter} from "@auth/prisma-adapter";
 
 const VATUSA_FACILITY = process.env['VATUSA_FACILITY'];
+const VATUSA_API_KEY = process.env['VATUSA_API_KEY'] || '';
 const DEV_MODE = process.env['DEV_MODE'] === 'true';
 
 export const authOptions: NextAuthOptions = {
@@ -21,9 +22,9 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         signIn: async ({user}) => {
             if (!DEV_MODE) {
-                const res = await fetch(`https://api.vatusa.net/v2/user/${user.cid}`);
+                const res = await fetch(`https://api.vatusa.net/v2/user/${user.cid}?apikey=${VATUSA_API_KEY}`);
                 const userData = await res.json();
-                return userData.data.facility === VATUSA_FACILITY || userData.data.visits.map((f: {facility: string}) => f.facility).includes(VATUSA_FACILITY);
+                return userData.data.facility === VATUSA_FACILITY || userData.data.visiting_facilities.map((f: {facility: string}) => f.facility).includes(VATUSA_FACILITY);
             }
             return true;
         },

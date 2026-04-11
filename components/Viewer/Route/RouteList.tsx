@@ -1,14 +1,17 @@
 'use client';
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import {toast} from "react-toastify";
 import {IconButton, List, ListItem, ListItemText, Tooltip, Typography} from "@mui/material";
-import {Delete, Label, LabelOff, Visibility, VisibilityOff} from "@mui/icons-material";
+import {Delete, Edit, Label, LabelOff, Visibility, VisibilityOff} from "@mui/icons-material";
 import FacilityColorPicker from "@/components/Viewer/FacilitySelector/FacilityColorPicker";
+import RouteFormDialog from "@/components/Viewer/Route/RouteFormDialog";
+import {RouteDisplayData} from "@/types/route";
 
 export default function RouteList() {
 
     const config = useContext(AirspaceViewerConfigContext);
+    const [editingRoute, setEditingRoute] = useState<RouteDisplayData | null>(null);
 
     const onDeleteRoute = (routeId: string) => {
         const updatedRoutes = config.data?.routes.filter((route) => route.id !== routeId) || [];
@@ -19,10 +22,7 @@ export default function RouteList() {
     const onToggleDisplayRoute = (routeId: string) => {
         const updatedRoutes = config.data?.routes.map((route) => {
             if (route.id === routeId) {
-                return {
-                    ...route,
-                    displayed: !route.displayed,
-                };
+                return { ...route, displayed: !route.displayed };
             }
             return route;
         }) || [];
@@ -32,10 +32,7 @@ export default function RouteList() {
     const onToggleShowLabels = (routeId: string) => {
         const updatedRoutes = config.data?.routes.map((route) => {
             if (route.id === routeId) {
-                return {
-                    ...route,
-                    showLabels: !route.showLabels,
-                };
+                return { ...route, showLabels: !route.showLabels };
             }
             return route;
         }) || [];
@@ -48,8 +45,7 @@ export default function RouteList() {
 
     return (
         <>
-            <Typography variant="subtitle2" textAlign="center"
-                        gutterBottom>Active Routes/Points</Typography>
+            <Typography variant="subtitle2" textAlign="center" gutterBottom>Active Routes/Points</Typography>
             {config.data?.routes.length === 0 &&
                 <Typography textAlign="center">No routes added</Typography>
             }
@@ -59,7 +55,6 @@ export default function RouteList() {
                         <Tooltip title={route.routeString}>
                             <ListItemText primary={route.name} />
                         </Tooltip>
-
                         <FacilityColorPicker existingColor={config.data?.colorOverrides.find((c) => c.id === route.id)?.color || '#FF0000'} onChange={(color) => {
                             onUpdateRouteColor(route.id, color);
                         }}/>
@@ -73,6 +68,11 @@ export default function RouteList() {
                                 {route.showLabels ? <LabelOff /> : <Label />}
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Edit Route">
+                            <IconButton onClick={() => setEditingRoute(route)}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip title="Delete Route">
                             <IconButton onClick={() => onDeleteRoute(route.id)}>
                                 <Delete />
@@ -81,7 +81,8 @@ export default function RouteList() {
                     </ListItem>
                 ))}
             </List>
-        </>
 
+            <RouteFormDialog open={!!editingRoute} onClose={() => setEditingRoute(null)} editRoute={editingRoute ?? undefined} />
+        </>
     );
 }

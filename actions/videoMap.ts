@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
-import {Prisma, VideoMap} from "@prisma/client";
+import {Prisma, VideoMap} from "@/generated/prisma/client";
 import {after} from "next/server";
 import {log} from "./log";
 import {OrderItem} from "@/components/Admin/Order/OrderList";
@@ -104,7 +104,7 @@ export const createOrUpdateVideoMap = async (formData: FormData) => {
     });
 
     if (!result.success) {
-        return { errors: result.error.errors, };
+        return { errors: result.error.issues, };
     }
 
     if (result.data.id) {

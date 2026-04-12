@@ -6,7 +6,7 @@ export default async function Page() {
     return (
         <Card>
             <CardContent>
-                <Stack direction="row" spacing={1} justifyContent="space-between">
+                <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between' }}>
                     <Typography variant="h5">Video Maps</Typography>
                     <Box>
                         <Link href="/admin/order/video-maps" style={{color: 'inherit',}}>

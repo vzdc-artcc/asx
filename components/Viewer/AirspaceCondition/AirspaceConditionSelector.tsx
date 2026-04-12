@@ -2,7 +2,7 @@
 import React, {useContext, useState} from 'react';
 import {Chip, Paper, Stack, Typography} from "@mui/material";
 import AirspaceConditionAddButton from "@/components/Viewer/AirspaceCondition/AirspaceConditionAddButton";
-import {AirspaceCondition} from "@prisma/client";
+import {AirspaceCondition} from "@/generated/prisma/browser";
 import AirspaceConditionDialog from "@/components/Viewer/AirspaceCondition/AirspaceConditionDialog";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";
@@ -55,7 +55,7 @@ export default function AirspaceConditionSelector() {
                                      defaultSelectedContainer={getContainer(editCondition?.containerId)}
                                      onSubmit={submitEdit}/>
             <Paper sx={{p: 0.5,}}>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                     <AirspaceConditionAddButton/>
                     <Stack direction="row" spacing={1} sx={{overflowX: 'auto',}}>
                         {conditions.map(condition => (

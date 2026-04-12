@@ -1,7 +1,7 @@
 'use client';
 
 import {GridColDef} from "@mui/x-data-grid";
-import {RadarFacility} from "@prisma/client";
+import {RadarFacility} from "@/generated/prisma/browser";
 import DataTable, {containsOnlyFilterOperator, equalsOnlyFilterOperator} from "../DataTable/DataTable";
 import {toast} from "react-toastify";
 import DeleteButton from "../GridButton/DeleteButton";

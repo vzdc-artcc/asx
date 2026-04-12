@@ -1,5 +1,5 @@
 'use client';
-import {VideoMap} from "@prisma/client";
+import {VideoMap} from "@/generated/prisma/browser";
 import Form from "next/form"
 import FormSaveButton from "../Form/FormSaveButton";
 import {Checkbox, FormControlLabel, TextField} from "@mui/material";

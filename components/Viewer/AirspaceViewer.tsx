@@ -1,6 +1,6 @@
 import React from 'react';
 import {AirspaceViewerDataProvider} from "@/contexts/AirspaceViewerDataContext";
-import {Box, Button, Card, CardContent, Container, Divider, Grid2, Stack, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, Container, Divider, Grid, Stack, Typography} from "@mui/material";
 import {AirspaceViewerConfigProvider} from "@/contexts/AirspaceViewerConfigContext";
 import AirspaceConditionSelector from "@/components/Viewer/AirspaceCondition/AirspaceConditionSelector";
 import VideoMapSelector from "@/components/Viewer/VideoMapSelector/VideoMapSelector";
@@ -31,7 +31,7 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                 <Container maxWidth="lg" sx={{mt: 2,}}>
                     <Card>
                         <CardContent>
-                            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1,}}>
+                            <Stack direction="row" spacing={1} sx={{mb: 1, alignItems: 'center'}}>
                                 <Info color="error"/>
                                 <Typography variant="h5">Unable to Load Active Consolidations</Typography>
                             </Stack>
@@ -55,17 +55,17 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
     return (
         <AirspaceViewerDataProvider>
             <AirspaceViewerConfigProvider liveConsolidations={idsConsolidations}>
-                <Grid2 container columns={10} spacing={2} sx={{m: 2}}>
-                    <Grid2 size={10}>
+                <Grid container columns={10} spacing={2} sx={{m: 2}}>
+                    <Grid size={10}>
                         <AirspaceConditionSelector/>
-                    </Grid2>
-                    <Grid2 size={{xs: 10, md: 3, xl: 2,}}
+                    </Grid>
+                    <Grid size={{xs: 10, md: 3, xl: 2,}}
                            sx={{height: {xs: '300px', md: 'calc(100vh - 64px - 96px)',},}}>
                         <Stack direction="column" spacing={2} sx={{ height: '100%',}}>
                             <Card sx={{height: '50%', overflow: 'auto',}}>
                                 <CardContent>
                                     <Box sx={{height: '100%',}}>
-                                        <Typography variant="h6" textAlign="center" gutterBottom>Map
+                                        <Typography variant="h6" sx={{ textAlign: 'center' }} gutterBottom>Map
                                             Settings <ConfigImportExportButton/></Typography>
                                         <Divider sx={{my: 2,}}/>
                                         <VideoMapSelector/>
@@ -77,7 +77,7 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                             <Card sx={{height: '50%', overflow: 'auto',}}>
                                 <CardContent>
                                     <Box sx={{height: '100%', textAlign: 'center',}}>
-                                        <Typography variant="h6" textAlign="center" gutterBottom>Route/Point Projection</Typography>
+                                        <Typography variant="h6" sx={{ textAlign: 'center' }} gutterBottom>Route/Point Projection</Typography>
                                         <Divider sx={{my: 2,}}/>
                                         <RouteAddForm />
                                         <Divider sx={{my: 2,}}/>
@@ -86,12 +86,12 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                                 </CardContent>
                             </Card>
                         </Stack>
-                    </Grid2>
-                    <Grid2 size={{xs: 10, md: 7, xl: 8,}}
+                    </Grid>
+                    <Grid size={{xs: 10, md: 7, xl: 8,}}
                            sx={{height: {xs: '100vh', md: 'calc(100vh - 64px - 96px)',},}}>
                         <Map/>
-                    </Grid2>
-                </Grid2>
+                    </Grid>
+                </Grid>
             </AirspaceViewerConfigProvider>
         </AirspaceViewerDataProvider>
     );

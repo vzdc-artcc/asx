@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import {after} from "next/server";
 import {log} from "./log";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
-import {Prisma} from "@prisma/client";
+import {Prisma} from "@/generated/prisma/client";
 import {z} from "zod";
 import {revalidatePath} from "next/cache";
 import {UTApi} from "uploadthing/server";
@@ -111,7 +111,7 @@ export const createOrUpdateFacility = async (formData: FormData) => {
     });
 
     if (!result.success) {
-        return { errors: result.error.errors, };
+        return { errors: result.error.issues, };
     }
 
     if (result.data.id) {

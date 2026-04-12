@@ -11,7 +11,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {AirspaceCondition, AirspaceConditionContainer, MappingJson, SectorMapping, VideoMap} from "@prisma/client";
+import {AirspaceCondition, AirspaceConditionContainer, MappingJson, SectorMapping, VideoMap} from "@/generated/prisma/browser";
 import Form from "next/form";
 import {useState} from "react";
 import FormSaveButton from "../Form/FormSaveButton";

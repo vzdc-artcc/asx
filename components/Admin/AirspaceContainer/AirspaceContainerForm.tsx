@@ -4,7 +4,7 @@ import Form from "next/form";
 import FormSaveButton from "../Form/FormSaveButton";
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
-import {AirspaceCondition, AirspaceConditionContainer} from "@prisma/client";
+import {AirspaceCondition, AirspaceConditionContainer} from "@/generated/prisma/browser";
 import {createOrUpdateAirspaceContainer} from "@/actions/airspace";
 
 export default function AirspaceContainerForm({container, conditions = [],}: {

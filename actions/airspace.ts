@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
-import {Prisma} from "@prisma/client";
+import {Prisma} from "@/generated/prisma/client";
 import {after} from "next/server";
 import {log} from "./log";
 import {OrderItem} from "@/components/Admin/Order/OrderList";
@@ -107,7 +107,7 @@ export const createOrUpdateAirspaceContainer = async (data: FormData) => {
     });
 
     if (!result.success) {
-        return { errors: result.error.errors, };
+        return { errors: result.error.issues, };
     }
 
     if (result.data.id) {

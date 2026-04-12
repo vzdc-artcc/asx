@@ -1,5 +1,5 @@
 import {ColorOverride} from "@/contexts/AirspaceViewerConfigContext";
-import {SectorMapping} from "@prisma/client";
+import {SectorMapping} from "@/generated/prisma/client";
 
 export const getMappingColor = (liveConsolidations: boolean, sector: SectorMapping, colorOverrides: ColorOverride[]) => {
     const override = colorOverrides.find(co => co.id === sector.id);

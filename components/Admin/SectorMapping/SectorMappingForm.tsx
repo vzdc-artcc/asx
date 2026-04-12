@@ -1,6 +1,6 @@
 'use client';
 import {Box, Stack, TextField} from "@mui/material";
-import {RadarFacility, SectorMapping} from "@prisma/client";
+import {RadarFacility, SectorMapping} from "@/generated/prisma/browser";
 import Form from "next/form";
 import FormSaveButton from "../Form/FormSaveButton";
 import {createOrUpdateSectorMapping} from "@/actions/sectorMapping";

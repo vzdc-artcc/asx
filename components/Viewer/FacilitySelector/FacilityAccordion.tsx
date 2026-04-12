@@ -78,7 +78,7 @@ export default function FacilityAccordion({facility, onDelete, disableDelete}: {
                     <ExpandMore/>
                 </IconButton>
             }>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                     <Checkbox
                         checked={selectAll}
                         onChange={handleSelectAll}

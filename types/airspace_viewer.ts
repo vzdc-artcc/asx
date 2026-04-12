@@ -5,7 +5,7 @@ import {
     RadarFacility,
     SectorMapping,
     VideoMap
-} from "@prisma/client";
+} from "@/generated/prisma/client";
 
 export type AirspaceConditionWithContainer = AirspaceCondition & {
     container: AirspaceConditionContainer;

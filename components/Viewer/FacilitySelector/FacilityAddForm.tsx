@@ -1,6 +1,6 @@
 'use client';
 import React, {SyntheticEvent, useContext, useState} from 'react';
-import {RadarFacility} from "@prisma/client";
+import {RadarFacility} from "@/generated/prisma/browser";
 import {Autocomplete, Box, IconButton, Stack, TextField,} from "@mui/material";
 import Form from "next/form";
 import {Add} from "@mui/icons-material";
@@ -43,7 +43,7 @@ export default function FacilityAddForm({onSubmit}: {
 
     return (
         <Form action={handleSubmit}>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <Autocomplete
                     size="small"
                     disabled={availableFacilities.length === 0}

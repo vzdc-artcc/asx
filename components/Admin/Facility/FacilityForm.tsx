@@ -1,6 +1,6 @@
 'use client';
 import {Checkbox, FormControlLabel, TextField} from "@mui/material";
-import {RadarFacility} from "@prisma/client";
+import {RadarFacility} from "@/generated/prisma/browser";
 import Form from "next/form";
 import FormSaveButton from "../Form/FormSaveButton";
 import {createOrUpdateFacility} from "@/actions/facility";

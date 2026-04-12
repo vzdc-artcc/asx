@@ -63,7 +63,7 @@ export default function ConfigImportExportButton() {
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Import/Export Current Map Settings</DialogTitle>
                 <DialogContent>
-                    <Typography fontWeight="bold" gutterBottom>Export</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }} gutterBottom>Export</Typography>
                     <Button variant="contained" size="large" onClick={downloadConfig} startIcon={<Download/>}>Download
                         Map Settings</Button>
                     <br/>
@@ -71,7 +71,7 @@ export default function ConfigImportExportButton() {
                         changes to the facilities, video maps, sectors, airspace conditions, and IDS real time
                         consolidations can and most probably will break file.</Typography>
                     <Divider sx={{my: 2,}}/>
-                    <Typography fontWeight="bold" gutterBottom>Import</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }} gutterBottom>Import</Typography>
                     <input type="file" accept=".json" onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {

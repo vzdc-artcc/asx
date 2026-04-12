@@ -63,7 +63,7 @@ export default function FacilityColorPicker({existingColor, onChange}: {
 
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
                 <DialogContent>
-                    <Stack direction="column" spacing={2} alignItems="center">
+                    <Stack direction="column" spacing={2} sx={{ alignItems: 'center' }}>
                         <HexColorPicker color={color || existingColor} onChange={handleColorChange}/>
                         <Stack direction="row" spacing={1} sx={{overflowX: 'auto', width: '100%', pb: 0.5,}}>
                             {manuallySetColors.map((color, i) => (

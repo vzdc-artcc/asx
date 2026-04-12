@@ -1,7 +1,7 @@
 import React from 'react';
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/auth/auth";
-import {Container, Grid2, Typography} from "@mui/material";
+import {Container, Grid, Typography} from "@mui/material";
 import AdminMenu from "@/components/Admin/AdminMenu";
 import {Metadata} from "next";
 
@@ -28,14 +28,14 @@ export default async function Layout({children}: { children: React.ReactNode }) 
 
     return (
         <Container maxWidth="xl">
-            <Grid2 container columns={9} spacing={2} sx={{mt: 2,}}>
-                <Grid2 size={{xs: 9, lg: 2,}}>
+            <Grid container columns={9} spacing={2} sx={{mt: 2,}}>
+                <Grid size={{xs: 9, lg: 2,}}>
                     <AdminMenu/>
-                </Grid2>
-                <Grid2 size="grow">
+                </Grid>
+                <Grid size="grow">
                     {children}
-                </Grid2>
-            </Grid2>
+                </Grid>
+            </Grid>
         </Container>
     );
 }

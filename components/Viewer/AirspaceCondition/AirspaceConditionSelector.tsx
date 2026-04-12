@@ -2,7 +2,7 @@
 import React, {useContext, useState} from 'react';
 import {Chip, Paper, Stack, Typography} from "@mui/material";
 import AirspaceConditionAddButton from "@/components/Viewer/AirspaceCondition/AirspaceConditionAddButton";
-import {AirspaceCondition} from "@prisma/client";
+import {AirspaceCondition} from "@/generated/prisma/browser";
 import AirspaceConditionDialog from "@/components/Viewer/AirspaceCondition/AirspaceConditionDialog";
 import {AirspaceViewerConfigContext} from "@/contexts/AirspaceViewerConfigContext";
 import {AirspaceViewerDataContext} from "@/contexts/AirspaceViewerDataContext";

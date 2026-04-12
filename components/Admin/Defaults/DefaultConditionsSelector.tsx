@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import {AirspaceCondition, AirspaceConditionContainer} from "@prisma/client";
+import {AirspaceCondition, AirspaceConditionContainer} from "@/generated/prisma/browser";
 import Form from "next/form";
 import FormSaveButton from "@/components/Admin/Form/FormSaveButton";
 import {Autocomplete, TextField} from "@mui/material";

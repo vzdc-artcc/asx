@@ -1,7 +1,7 @@
 'use client';
 import React, {useState} from 'react';
 import {Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField} from "@mui/material";
-import {AirspaceCondition} from "@prisma/client";
+import {AirspaceCondition} from "@/generated/prisma/browser";
 import {toast} from "react-toastify";
 import {AirspaceContainerWithConditions} from "@/types/airspace_viewer";
 

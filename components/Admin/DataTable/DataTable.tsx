@@ -1,5 +1,5 @@
 'use client';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
     DataGrid,
     getGridStringOperators,
@@ -8,7 +8,6 @@ import {
     GridFilterModel,
     GridPaginationModel,
     GridSortModel,
-    GridToolbar
 } from "@mui/x-data-grid";
 import {toast} from "react-toastify";
 import {Box} from "@mui/material";
@@ -26,88 +25,125 @@ export default function DataTable<T>(
         initialSort,
         fetchData
     }:
-        {
-            columns: GridColDef[],
-            initialPagination?: GridPaginationModel,
-            pageSizeOptions?: number[],
-            initialFilter?: GridFilterItem,
-            initialSort?: GridSortModel,
-            fetchData: (pagination: GridPaginationModel, sortModel: GridSortModel, filter?: GridFilterItem) => Promise<{
-                data: T[],
-                rowCount: number,
-            }>,
-        }
+    {
+        columns: GridColDef[],
+        initialPagination?: GridPaginationModel,
+        pageSizeOptions?: number[],
+        initialFilter?: GridFilterItem,
+        initialSort?: GridSortModel,
+        fetchData: (pagination: GridPaginationModel, sortModel: GridSortModel, filter?: GridFilterItem) => Promise<{
+            data: T[],
+            rowCount: number,
+        }>,
+    }
 ) {
 
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [data, setData] = useState<T[]>();
-    const [pagination, setPagination] = useState<GridPaginationModel>(() => {
+
+    // Compute initial values from URL params using useMemo to avoid re-computation
+    const initialPaginationFromUrl = useMemo(() => {
         const page = Number(searchParams.get('page')) || initialPagination.page;
         const pageSize = Number(searchParams.get('pageSize')) || initialPagination.pageSize;
         return {page, pageSize};
-    });
-    const [rowCount, setRowCount] = useState(0);
-    const [filter, setFilter] = useState<GridFilterItem | undefined>(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Only compute once on mount
+
+    const initialFilterFromUrl = useMemo(() => {
         const filterField = searchParams.get('filterField');
         const filterValue = searchParams.get('filterValue');
         const filterOperator = searchParams.get('filterOperator');
-        return filterField && filterValue && filterOperator ? {
-            field: filterField,
-            value: filterValue,
-            operator: filterOperator
-        } : initialFilter;
-    });
-    const [sortModel, setSortModel] = useState<GridSortModel>(() => {
+        return filterField && filterValue && filterOperator
+            ? {field: filterField, value: filterValue, operator: filterOperator}
+            : initialFilter;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Only compute once on mount
+
+    const initialSortFromUrl = useMemo(() => {
         const sortField = searchParams.get('sortField');
         const sortDirection = searchParams.get('sortDirection');
-        return sortField && sortDirection ? [{
-            field: sortField,
-            sort: sortDirection as 'asc' | 'desc'
-        }] : initialSort || [];
-    });
+        return sortField && sortDirection
+            ? [{field: sortField, sort: sortDirection as 'asc' | 'desc'}]
+            : initialSort || [];
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Only compute once on mount
 
-    const updateQueryParams = (params: Record<string, string>) => {
+    const [data, setData] = useState<T[]>();
+    const [pagination, setPagination] = useState<GridPaginationModel>(initialPaginationFromUrl);
+    const [rowCount, setRowCount] = useState(0);
+    const [filter, setFilter] = useState<GridFilterItem | undefined>(initialFilterFromUrl);
+    const [sortModel, setSortModel] = useState<GridSortModel>(initialSortFromUrl);
+
+    const updateQueryParams = useCallback((params: Record<string, string>) => {
         const newParams = new URLSearchParams(searchParams.toString());
         Object.entries(params).forEach(([key, value]) => {
             newParams.set(key, value);
         });
         router.push(`?${newParams.toString()}`);
-    };
-
-    const getData = useCallback(async () => {
-        try {
-            const {data, rowCount} = await fetchData(pagination, sortModel, filter);
-            setData(data);
-            setRowCount(rowCount);
-        } catch {
-            toast.error('Failed to fetch data');
-        }
-    }, [fetchData, filter, pagination, sortModel]);
+    }, [router, searchParams]);
 
     useEffect(() => {
-        getData().then();
-    }, [getData]);
+        let ignore = false;
 
-    const handleFilterChange = (newFilters: GridFilterModel) => {
+        fetchData(pagination, sortModel, filter)
+            .then(({data, rowCount}) => {
+                if (!ignore) {
+                    setData(data);
+                    setRowCount(rowCount);
+                }
+            })
+            .catch(() => {
+                if (!ignore) {
+                    toast.error('Failed to fetch data');
+                }
+            });
+
+        return () => {
+            ignore = true;
+        };
+    }, [fetchData, filter, pagination, sortModel]);
+
+
+    const handleFilterChange = useCallback((newFilters: GridFilterModel) => {
+        if (newFilters.quickFilterValues?.join(',')) {
+            const filterCol = columns.find((c) => c.filterable === undefined || c.filterable);
+            if (!filterCol) return;
+
+            setFilter({
+                field: filterCol.field,
+                operator: 'contains',
+                value: newFilters.quickFilterValues.join(','),
+            });
+
+            updateQueryParams({
+                filterField: filterCol.field,
+                filterValue: newFilters.quickFilterValues.join(','),
+                filterOperator: 'contains',
+            });
+
+            return;
+        }
+
         const newFilter = newFilters.items[0];
         setFilter(newFilter);
-        updateQueryParams({
-            filterField: newFilter?.field || '',
-            filterValue: newFilter?.value?.toString() || '',
-            filterOperator: newFilter?.operator || ''
-        });
-    };
+        if (newFilter) {
+            updateQueryParams({
+                filterField: newFilter.field || '',
+                filterValue: newFilter.value?.toString() || '',
+                filterOperator: newFilter.operator || ''
+            });
+        }
+    }, [columns, updateQueryParams]);
 
-    const handlePaginationModelChange = (newPagination: GridPaginationModel) => {
+    const handlePaginationModelChange = useCallback((newPagination: GridPaginationModel) => {
         setPagination(newPagination);
         updateQueryParams({
             page: newPagination.page.toString(),
             pageSize: newPagination.pageSize.toString()
         });
-    };
+    }, [updateQueryParams]);
 
-    const handleSortChange = (newSortModel: GridSortModel) => {
+    const handleSortChange = useCallback((newSortModel: GridSortModel) => {
         setSortModel(newSortModel);
         if (newSortModel.length > 0) {
             updateQueryParams({
@@ -120,12 +156,31 @@ export default function DataTable<T>(
                 sortDirection: ''
             });
         }
-    };
+    }, [updateQueryParams]);
 
     return (
         <Box sx={{boxSizing: 'border-box', width: '100%',}}>
             <DataGrid
-                sx={{mt: 2,}}
+                sx={{
+                    mt: 2,
+                    fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+                    fontSize: '0.875rem',
+                    '& .MuiDataGrid-root': {
+                        fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+                    },
+                    '& .MuiDataGrid-cell': {
+                        fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+                        fontSize: '0.875rem',
+                    },
+                    '& .MuiDataGrid-columnHeader': {
+                        fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+                        fontSize: '0.875rem',
+                        fontWeight: 600,
+                    },
+                    '& .MuiDataGrid-toolbarContainer': {
+                        fontFamily: 'Roboto, "Helvetica Neue", sans-serif',
+                    },
+                }}
                 loading={!data}
                 rows={data || []}
                 autoHeight
@@ -141,9 +196,7 @@ export default function DataTable<T>(
                 sortModel={sortModel}
                 onSortModelChange={handleSortChange}
                 pageSizeOptions={pageSizeOptions}
-                slots={{
-                    toolbar: GridToolbar,
-                }}
+                showToolbar
                 disableRowSelectionOnClick
             />
         </Box>

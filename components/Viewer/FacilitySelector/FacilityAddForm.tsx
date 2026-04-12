@@ -1,6 +1,6 @@
 'use client';
 import React, {SyntheticEvent, useContext, useState} from 'react';
-import {RadarFacility} from "@prisma/client";
+import {RadarFacility} from "@/generated/prisma/browser";
 import {Autocomplete, Box, IconButton, Stack, TextField,} from "@mui/material";
 import Form from "next/form";
 import {Add} from "@mui/icons-material";

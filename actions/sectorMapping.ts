@@ -5,7 +5,7 @@ import prisma from "@/lib/db";
 import {after} from "next/server";
 import {UTApi} from "uploadthing/server";
 import {log} from "./log";
-import {Prisma, RadarFacility, SectorMapping} from "@prisma/client";
+import {Prisma, RadarFacility, SectorMapping} from "@/generated/prisma/client";
 import {z} from "zod";
 import {GridFilterItem, GridPaginationModel, GridSortModel} from "@mui/x-data-grid";
 import {revalidatePath} from "next/cache";

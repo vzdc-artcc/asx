@@ -6,7 +6,7 @@ import {
     MappingJsonWithConditions,
     SectorMappingWithConditions
 } from "@/types/airspace_viewer";
-import {MappingJson} from "@prisma/client";
+import {MappingJson} from "@/generated/prisma/browser";
 import {getMappingColor} from "@/lib/color";
 import {Box, Card, CardContent, Chip, Stack, Typography} from "@mui/material";
 import {Info} from "@mui/icons-material";

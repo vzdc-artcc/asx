@@ -6,7 +6,7 @@ import {toast} from "react-toastify";
 import DeleteButton from "../GridButton/DeleteButton";
 import EditButton from "../GridButton/EditButton";
 import {deleteAirspaceContainer, fetchAirspaceContainers} from "@/actions/airspace";
-import {AirspaceCondition} from "@prisma/client";
+import {AirspaceCondition} from "@/generated/prisma/browser";
 
 export default function AirspaceContainerTable() {
 

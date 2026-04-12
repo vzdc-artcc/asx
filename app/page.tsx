@@ -1,4 +1,4 @@
-import {Card, CardActionArea, CardContent, CardMedia, Container, Grid2, Typography} from "@mui/material";
+import {Card, CardActionArea, CardContent, CardMedia, Container, Grid, Typography} from "@mui/material";
 import Image from "next/image";
 import airspaceExplorer from "@/public/img/airspace-explorer.png";
 import activeConsolidations from "@/public/img/active-consolidations.png";
@@ -8,8 +8,8 @@ import Link from "next/link";
 export default function Home() {
   return (
       (<Container maxWidth="md" sx={{mt: 10,}}>
-      <Grid2 container spacing={4} columns={2}>
-        <Grid2 size={{ xs: 2, md: 1, }}>
+      <Grid container spacing={4} columns={2}>
+        <Grid size={{ xs: 2, md: 1, }}>
           <Link href="/active-consolidations" style={{color: 'inherit', textDecoration: 'none',}}>
             <Card sx={{height: '100%',}}>
               <CardActionArea>
@@ -33,8 +33,8 @@ export default function Home() {
               </CardActionArea>
             </Card>
           </Link>
-        </Grid2>
-        <Grid2 size={{ xs: 2, md: 1, }}>
+        </Grid>
+        <Grid size={{ xs: 2, md: 1, }}>
           <Link href="/explorer" style={{color: 'inherit', textDecoration: 'none',}}>
             <Card sx={{height: '100%',}}>
               <CardActionArea sx={{height: '100%',}}>
@@ -58,8 +58,8 @@ export default function Home() {
               </CardActionArea>
             </Card>
           </Link>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       </Container>)
   );
 }

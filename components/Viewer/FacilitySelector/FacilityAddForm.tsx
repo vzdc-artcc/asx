@@ -43,7 +43,7 @@ export default function FacilityAddForm({onSubmit}: {
 
     return (
         <Form action={handleSubmit}>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <Autocomplete
                     size="small"
                     disabled={availableFacilities.length === 0}

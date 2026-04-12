@@ -31,7 +31,7 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                 <Container maxWidth="lg" sx={{mt: 2,}}>
                     <Card>
                         <CardContent>
-                            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1,}}>
+                            <Stack direction="row" spacing={1} sx={{mb: 1, alignItems: 'center'}}>
                                 <Info color="error"/>
                                 <Typography variant="h5">Unable to Load Active Consolidations</Typography>
                             </Stack>
@@ -65,7 +65,7 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                             <Card sx={{height: '50%', overflow: 'auto',}}>
                                 <CardContent>
                                     <Box sx={{height: '100%',}}>
-                                        <Typography variant="h6" textAlign="center" gutterBottom>Map
+                                        <Typography variant="h6" sx={{ textAlign: 'center' }} gutterBottom>Map
                                             Settings <ConfigImportExportButton/></Typography>
                                         <Divider sx={{my: 2,}}/>
                                         <VideoMapSelector/>
@@ -77,7 +77,7 @@ export default async function AirspaceViewer({useConsolidations}: { useConsolida
                             <Card sx={{height: '50%', overflow: 'auto',}}>
                                 <CardContent>
                                     <Box sx={{height: '100%', textAlign: 'center',}}>
-                                        <Typography variant="h6" textAlign="center" gutterBottom>Route/Point Projection</Typography>
+                                        <Typography variant="h6" sx={{ textAlign: 'center' }} gutterBottom>Route/Point Projection</Typography>
                                         <Divider sx={{my: 2,}}/>
                                         <RouteAddForm />
                                         <Divider sx={{my: 2,}}/>

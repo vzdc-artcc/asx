@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     return (
         <Card>
             <CardContent>
-                <Stack direction="row" spacing={1} justifyContent="space-between">
+                <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between' }}>
                     <Typography variant="h5">{facility.name} - Sectors</Typography>
                     <Box>
                         <SectorMappingIdsAddButton facilityId={facility.id}/>

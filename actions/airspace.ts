@@ -107,7 +107,7 @@ export const createOrUpdateAirspaceContainer = async (data: FormData) => {
     });
 
     if (!result.success) {
-        return { errors: result.error.errors, };
+        return { errors: result.error.issues, };
     }
 
     if (result.data.id) {

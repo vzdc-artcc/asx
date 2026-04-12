@@ -55,7 +55,7 @@ export default function AirspaceConditionSelector() {
                                      defaultSelectedContainer={getContainer(editCondition?.containerId)}
                                      onSubmit={submitEdit}/>
             <Paper sx={{p: 0.5,}}>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                     <AirspaceConditionAddButton/>
                     <Stack direction="row" spacing={1} sx={{overflowX: 'auto',}}>
                         {conditions.map(condition => (

@@ -37,10 +37,10 @@ export default function FacilitySelector() {
                 <FacilityAddForm onSubmit={onAddFacility}/>
                 <Divider sx={{my: 2,}}/>
             </>}
-            <Typography variant="subtitle2" textAlign="center"
+            <Typography variant="subtitle2" sx={{ textAlign: 'center' }}
                         gutterBottom>{config.data?.liveConsolidations ? 'Online' : 'Selected'} Facilities</Typography>
             {activeFacilities.length === 0 &&
-                <Typography variant="subtitle1" textAlign="center">No
+                <Typography variant="subtitle1" sx={{ textAlign: 'center' }}>No
                     facilities {config.data.liveConsolidations ? 'online' : 'selected'}</Typography>}
             <Box sx={{flex: 1, overflow: 'auto'}}>
                 {activeFacilities.map(facility => (

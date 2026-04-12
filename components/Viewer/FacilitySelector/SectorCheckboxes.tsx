@@ -48,7 +48,7 @@ export default function SectorCheckboxes({sectors}: { sectors: SectorMappingWith
                                                      checked={!!activeSectors.find((s) => s.id === sector.id)}
                                                      onChange={handleChange}/>} sx={{mb: 2,}} label={
                     <>
-                        <Stack direction="row" spacing={1} alignItems="center">
+                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                             <Typography>{sector.name}</Typography>
                             <FacilityColorPicker
                                 existingColor={getMappingColor(!!config.data?.liveConsolidations, sector, config.data?.colorOverrides || [])}

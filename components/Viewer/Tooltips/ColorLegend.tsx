@@ -22,9 +22,9 @@ function ColorLegend({colorLegend}: { colorLegend: { color: string, name: string
                 p: 2,
             }}
         >
-            <Typography variant="subtitle2" textAlign="center" gutterBottom>Active Positions</Typography>
+            <Typography variant="subtitle2" sx={{ textAlign: 'center' }} gutterBottom>Active Positions</Typography>
             {colorLegend.map((c, idx) => (
-                <Stack key={idx} direction="row" spacing={2} alignItems="center" sx={{mt: 1,}}>
+                <Stack key={idx} direction="row" spacing={2} sx={{mt: 1, alignItems: 'center'}}>
                     <Paper style={{background: c.color, width: '20px', height: '20px',}}></Paper>
                     <Box>
                         <Typography variant="body2">{c.name}</Typography>

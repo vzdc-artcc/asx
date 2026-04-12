@@ -205,12 +205,12 @@ export default function Map() {
                                     {route.showLabels && route.coordinates.map((coord, idx) => (
                                         <CircleMarker
                                             key={`${route.id}-wp-${idx}`}
-                                            center={[coord.latitude, coord.longitude]}
+                                            center={[coord.latitude, coord.longitude] as [number, number]}
                                             radius={4}
                                             pathOptions={{color: colorOverride, fillColor: colorOverride, fillOpacity: 1}}
                                             interactive={false}
                                         >
-                                            <LeafletTooltip direction="right" permanent offset={[8, 0]}>
+                                            <LeafletTooltip direction="right" permanent offset={[8, 0] as [number, number]}>
                                                 {coord.name}
                                             </LeafletTooltip>
                                         </CircleMarker>
@@ -270,7 +270,7 @@ const fulfillGeoJsonRequests = async (requests: GeoJsonRequest[]) => {
 const EmptyViewer = (
     <Card>
         <CardContent>
-            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1,}}>
+            <Stack direction="row" spacing={1} sx={{mb: 1, alignItems: 'center'}}>
                 <Info color="info"/>
                 <Typography variant="h5">Welcome to the Airspace Map!</Typography>
             </Stack>
@@ -287,12 +287,12 @@ const EmptyViewer = (
 const ErrorCard = (message: string) => (
     <Card>
         <CardContent>
-            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1,}}>
+            <Stack direction="row" spacing={1} sx={{mb: 1, alignItems: 'center'}}>
                 <Info color="error"/>
                 <Typography variant="h5">Unable to Render Map</Typography>
             </Stack>
             <Typography gutterBottom>{message}</Typography>
-            <Typography fontWeight="bold">Airspace conditions are added at the top of the page and maps that require a
+            <Typography sx={{ fontWeight: 'bold' }}>Airspace conditions are added at the top of the page and maps that require a
                 certain condition to be set are denoted with a <Chip color="primary" size="small" label="LABEL"/>. Maps
                 can and will change based on the conditions set since airspace can depend on external
                 factors.</Typography>

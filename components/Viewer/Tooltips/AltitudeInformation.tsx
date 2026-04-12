@@ -124,7 +124,7 @@ export default function AltitudeInformation({sectors, manualOwnedBy}: {
                 p: 2,
             }}
         >
-            <Typography variant="subtitle2" textAlign="center" gutterBottom>Sector Altitudes</Typography>
+            <Typography variant="subtitle2" sx={{ textAlign: 'center' }} gutterBottom>Sector Altitudes</Typography>
             {filteredDisplayedAltitudes
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .sort((a, b) => a.altitude.localeCompare(b.altitude))

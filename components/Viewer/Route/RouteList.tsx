@@ -45,9 +45,9 @@ export default function RouteList() {
 
     return (
         <>
-            <Typography variant="subtitle2" textAlign="center" gutterBottom>Active Routes/Points</Typography>
+            <Typography variant="subtitle2" sx={{ textAlign: 'center' }} gutterBottom>Active Routes/Points</Typography>
             {config.data?.routes.length === 0 &&
-                <Typography textAlign="center">No routes added</Typography>
+                <Typography sx={{ textAlign: 'center' }}>No routes added</Typography>
             }
             <List>
                 {config.data?.routes.map((route) => (

@@ -7,7 +7,7 @@ export default async function Page() {
     return (
         <Card>
             <CardContent>
-                <Stack direction="row" spacing={1} justifyContent="space-between">
+                <Stack direction="row" spacing={1} sx={{ justifyContent: 'space-between' }}>
                     <Typography variant="h5">Radar Facilities</Typography>
                     <Box>
                         <Link href="/admin/order/facilities" style={{color: 'inherit',}}>

@@ -2,15 +2,15 @@
 import React from 'react';
 import {Save} from "@mui/icons-material";
 import {useFormStatus} from 'react-dom'
-import {LoadingButton} from "@mui/lab";
+import { Button } from "@mui/material";
 
 export default function FormSaveButton() {
 
     const {pending} = useFormStatus();
 
     return (
-        <LoadingButton type="submit" loading={pending} variant="contained" size="large" startIcon={<Save/>}>
+        <Button type="submit" loading={pending} variant="contained" size="large" startIcon={<Save/>}>
             Save
-        </LoadingButton>
+        </Button>
     );
 }

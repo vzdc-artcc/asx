@@ -32,15 +32,12 @@ function ZuluTime() {
 
     return (
         <Link href="/" style={{textDecoration: 'none', color: 'inherit',}}>
-            <Stack direction="row" justifyContent="center" sx={{color: 'red',}}>
-                <Typography variant="h3" sx={{width: '4rem',}}
-                            textAlign="center">{convertToTwoDigit(time.hours)}</Typography>
+            <Stack direction="row" sx={{color: 'red', justifyContent: 'center'}}>
+                <Typography variant="h3" sx={{width: '4rem', textAlign: 'center'}}>{convertToTwoDigit(time.hours)}</Typography>
                 <Typography variant="h3">:</Typography>
-                <Typography variant="h3" sx={{width: '4rem',}}
-                            textAlign="center">{convertToTwoDigit(time.minutes)}</Typography>
+                <Typography variant="h3" sx={{width: '4rem', textAlign: 'center'}}>{convertToTwoDigit(time.minutes)}</Typography>
                 <Typography variant="h3">:</Typography>
-                <Typography variant="h3" sx={{width: '4rem',}}
-                            textAlign="center">{convertToTwoDigit(time.seconds)}</Typography>
+                <Typography variant="h3" sx={{width: '4rem', textAlign: 'center'}}>{convertToTwoDigit(time.seconds)}</Typography>
             </Stack>
         </Link>
 

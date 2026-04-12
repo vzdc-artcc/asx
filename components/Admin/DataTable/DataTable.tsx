@@ -1,5 +1,5 @@
 'use client';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
     DataGrid,
     getGridStringOperators,
@@ -41,38 +41,29 @@ export default function DataTable<T>(
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    // Compute initial values from URL params using useMemo to avoid re-computation
-    const initialPaginationFromUrl = useMemo(() => {
+    // Initialize state with defaults first using initializer functions
+    const [data, setData] = useState<T[]>();
+    const [pagination, setPagination] = useState<GridPaginationModel>(() => {
         const page = Number(searchParams.get('page')) || initialPagination.page;
         const pageSize = Number(searchParams.get('pageSize')) || initialPagination.pageSize;
         return {page, pageSize};
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Only compute once on mount
-
-    const initialFilterFromUrl = useMemo(() => {
+    });
+    const [rowCount, setRowCount] = useState(0);
+    const [filter, setFilter] = useState<GridFilterItem | undefined>(() => {
         const filterField = searchParams.get('filterField');
         const filterValue = searchParams.get('filterValue');
         const filterOperator = searchParams.get('filterOperator');
         return filterField && filterValue && filterOperator
             ? {field: filterField, value: filterValue, operator: filterOperator}
             : initialFilter;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Only compute once on mount
-
-    const initialSortFromUrl = useMemo(() => {
+    });
+    const [sortModel, setSortModel] = useState<GridSortModel>(() => {
         const sortField = searchParams.get('sortField');
         const sortDirection = searchParams.get('sortDirection');
         return sortField && sortDirection
             ? [{field: sortField, sort: sortDirection as 'asc' | 'desc'}]
             : initialSort || [];
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Only compute once on mount
-
-    const [data, setData] = useState<T[]>();
-    const [pagination, setPagination] = useState<GridPaginationModel>(initialPaginationFromUrl);
-    const [rowCount, setRowCount] = useState(0);
-    const [filter, setFilter] = useState<GridFilterItem | undefined>(initialFilterFromUrl);
-    const [sortModel, setSortModel] = useState<GridSortModel>(initialSortFromUrl);
+    });
 
     const updateQueryParams = useCallback((params: Record<string, string>) => {
         const newParams = new URLSearchParams(searchParams.toString());

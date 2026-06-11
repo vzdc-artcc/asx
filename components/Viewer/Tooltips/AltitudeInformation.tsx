@@ -89,7 +89,7 @@ export default function AltitudeInformation({sectors, manualOwnedBy}: {
                 splitShelves[i] = altitudeComponents.join('-');
             }
 
-            firstNonNullAltitude = splitShelves.join(' / ');
+            firstNonNullAltitude = splitShelves.join(' - ');
 
             next.push({
                 name: ownerSector.json?.name || ownerSector.key,

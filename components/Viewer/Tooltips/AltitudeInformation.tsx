@@ -71,10 +71,10 @@ export default function AltitudeInformation({sectors, manualOwnedBy}: {
             let firstNonNullAltitude = altitudes.find(Boolean);
             if (!firstNonNullAltitude) continue;
 
-            const splitShelves = firstNonNullAltitude.split(' - ');
+            const splitShelves = firstNonNullAltitude.split('-');
 
             for (let i = 0; i < splitShelves.length; i++) {
-                const shelf = splitShelves[i];
+                const shelf = splitShelves[i].trim();
                 let altitudeComponents = shelf.replace('FL', '').replace('SFC', '000').split(' ');
 
                 if (altitudeComponents.length !== 2) continue;
